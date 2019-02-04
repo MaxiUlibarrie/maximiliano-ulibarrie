@@ -39,15 +39,15 @@ public class RecentFileListSystemTest {
     File duplicatedFile = new File("C:/","example1.java");
     recentFileList.add(duplicatedFile);
 
-    boolean isDuplicated = false;
-    for (File file : recentFileList.getList()) {
+    int amountDuplicated = 0;
+    for (File file : recentFileList) {
       if (file.equals(duplicatedFile)) {
-        isDuplicated = true;
-        break;
+        amountDuplicated++;
+        if (amountDuplicated == 2) break;
       }
     }
 
-    assertFalse(isDuplicated);
+    assertTrue(amountDuplicated == 1);
   }
 
   @Test
