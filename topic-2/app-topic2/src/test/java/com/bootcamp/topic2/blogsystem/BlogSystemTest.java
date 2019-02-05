@@ -1,6 +1,7 @@
 package com.bootcamp.topic2.blogsystem;
 
-import java.util.GregorianCalendar;
+import com.bootcamp.topic2.blogsystemdao.EntryDAO;
+import java.time.LocalDateTime;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -8,50 +9,66 @@ import static org.mockito.Mockito.*;
 public class BlogSystemTest {
   @Test
   public void whenPostNewEntryThenItExistsInTheBlogList() {
-    Blog blog = new Blog(5,"ownerName","www.blog.com");
-    Entry entry = mock(Entry.class);
-    blog.add(entry);
+    Blog blog = new Blog("ownerName","www.blog.com");
+    EntryDAO entryDAO = mock(EntryDAO.class);
+    when(entryDAO.recoveryById(1)).thenReturn(new Entry("title","topic","body"));
+    Entry entry = entryDAO.recoveryById(1);
+    blog.addEntry(entry);
 
-    assertTrue(blog.contains(entry));
+    assertTrue(blog.getEntryList().contains(entry));
   }
 
   @Test
   public void whenDeleteExistingEntryThenItIsGoneFromTheBlog() {
-    Blog blog = new Blog(5,"ownerName","www.blog.com");
-    Entry entry1 = mock(Entry.class);
-    blog.add(entry1);
-    Entry entry2 = mock(Entry.class);
-    blog.add(entry2);
-    Entry entry3 = mock(Entry.class);
-    blog.add(entry3);
+    EntryDAO entryDAO = mock(EntryDAO.class);
+    Blog blog = new Blog("ownerName","www.blog.com");
+
+    when(entryDAO.recoveryById(1)).thenReturn(new Entry("title1","topic1","body1"));
+    when(entryDAO.recoveryById(2)).thenReturn(new Entry("title2","topic2","body2"));
+    when(entryDAO.recoveryById(3)).thenReturn(new Entry("title3","topic3","body3"));
+
+    Entry entry1 = entryDAO.recoveryById(1);
+    blog.addEntry(entry1);
+
+    Entry entry2 = entryDAO.recoveryById(2);
+    blog.addEntry(entry2);
+
+    Entry entry3 = entryDAO.recoveryById(3);
+    blog.addEntry(entry3);
 
     blog.deleteEntry(entry2);
 
-    assertFalse(blog.contains(entry2));
+    assertFalse(blog.getEntryList().contains(entry2));
   }
 
   @Test
   public void whenShowMostRecentEntryThenTheseHaveToBeInOrderDate() {
-    Blog blog = new Blog(4,"ownerName","www.blog.com");
-    Entry entry1 = mock(Entry.class);
-    when(entry1.getDate()).thenReturn(new GregorianCalendar(2019,5,2));
-    blog.add(entry1);
+    EntryDAO entryDAO = mock(EntryDAO.class);
+    Blog blog = new Blog("ownerName","www.blog.com");
 
-    Entry entry2 = mock(Entry.class);
-    when(entry2.getDate()).thenReturn(new GregorianCalendar(2019,5,3));
-    blog.add(entry2);
+    when(entryDAO.recoveryById(1)).thenReturn(new Entry("title1","topic1","body1"));
+    when(entryDAO.recoveryById(2)).thenReturn(new Entry("title2","topic2","body2"));
+    when(entryDAO.recoveryById(3)).thenReturn(new Entry("title3","topic3","body3"));
 
-    Entry entry3 = mock(Entry.class);
-    when(entry3.getDate()).thenReturn(new GregorianCalendar(2019,5,4));
-    blog.add(entry3);
+    Entry entry1 = entryDAO.recoveryById(1);
+    entry1.setDatetime(LocalDateTime.of(2018,2,5,16,40));
+    blog.addEntry(entry1);
 
-    Entry entry4 = mock(Entry.class);
-    when(entry4.getDate()).thenReturn(new GregorianCalendar(2019,5,5));
-    blog.add(entry4);
+    Entry entry2 = entryDAO.recoveryById(2);
+    entry2.setDatetime(LocalDateTime.of(2019,2,3,16,43));
+    blog.addEntry(entry2);
+
+    Entry entry3 = entryDAO.recoveryById(3);
+    entry3.setDatetime(LocalDateTime.of(2019,2,5,10,43));
+    blog.addEntry(entry3);
 
     boolean areInOrder = true;
-    for (int i = 0; i < blog.size() - 1; i++) {
-      if (!blog.get(i).getDate().before(blog.get(i+1).getDate())) {
+    LocalDateTime previous, next;
+    for (int i = 0; i < blog.getEntryList().size() - 1; i++) {
+      previous = blog.getEntryList().get(i).getDatetime();
+      next = blog.getEntryList().get(i+1).getDatetime();
+
+      if (previous.isBefore(next)) {
         areInOrder = false;
       }
     }

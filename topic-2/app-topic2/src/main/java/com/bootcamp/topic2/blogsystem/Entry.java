@@ -1,18 +1,19 @@
 package com.bootcamp.topic2.blogsystem;
 
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
-public class Entry {
+public class Entry implements Comparable<Entry> {
   private String title;
   private String topic;
   private String body;
-  private GregorianCalendar date;
+  private LocalDateTime datetime;
 
   public Entry(String title, String topic, String body) {
     this.title = title;
     this.topic = topic;
     this.body = body;
-    this.date = new GregorianCalendar();
+    this.datetime = LocalDateTime.now();
   }
 
   public String getTitle() {
@@ -39,29 +40,31 @@ public class Entry {
     this.body = body;
   }
 
-  public GregorianCalendar getDate() {
-    return date;
+  public LocalDateTime getDatetime() {
+    return datetime;
   }
 
-  public void setDate(GregorianCalendar date) {
-    this.date = date;
+  public void setDatetime(LocalDateTime datetime) {
+    this.datetime = datetime;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (o == this) {
+    if (this == o) {
       return true;
     }
-    if (!(o instanceof Entry)) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Entry anEntry = (Entry) o;
+    Entry entry = (Entry) o;
+    return title.equals(entry.title) &&
+        Objects.equals(topic, entry.topic) &&
+        Objects.equals(datetime, entry.datetime);
+  }
 
-    boolean areEqualsTitle = anEntry.getTitle().equals(this.getTitle());
-    boolean areEqualsTopic = anEntry.getTopic().equals(this.getTopic());
-    boolean areEqualsBody = anEntry.getBody().equals(this.getBody());
-
-    return areEqualsTitle && areEqualsTopic && areEqualsBody;
+  @Override
+  public int hashCode() {
+    return Objects.hash(title, topic, datetime);
   }
 
   @Override
@@ -70,7 +73,13 @@ public class Entry {
         "title='" + title + '\'' +
         ", topic='" + topic + '\'' +
         ", body='" + body + '\'' +
-        ", date=" + date.getTime().toString() +
+        ", datetime=" + datetime +
         '}';
+  }
+
+
+  @Override
+  public int compareTo(Entry entry) {
+    return entry.getDatetime().compareTo(this.datetime);
   }
 }

@@ -1,16 +1,22 @@
 package com.bootcamp.topic2.blogsystem;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import java.util.Collections;
 
-public class Blog extends ArrayList<Entry> {
+/**
+ * Blog organize entries, the list is organized from
+ * the most recent entry (FIRST element of the list) to the less
+ * recent (LAST element of the list).
+ */
+public class Blog {
+  private ArrayList<Entry> entryList;
   private String ownerName;
   private String url;
 
-  public Blog(int initialCapacity, String ownerName, String url) {
-    super(initialCapacity);
+  public Blog(String ownerName, String url) {
     this.ownerName = ownerName;
     this.url = url;
+    this.entryList = new ArrayList<Entry>();
   }
 
   public String getOwnerName() {
@@ -29,26 +35,34 @@ public class Blog extends ArrayList<Entry> {
     this.url = url;
   }
 
+  public ArrayList<Entry> getEntryList() {
+    return entryList;
+  }
+
+  public void setEntryList(ArrayList<Entry> entryList) {
+    this.entryList = entryList;
+  }
+
   public boolean deleteEntry(Entry entry) {
-    if (super.contains(entry)) {
-      return super.remove(entry);
+    if (entryList.contains(entry)) {
+      return entryList.remove(entry);
     }
     return false;
   }
 
-  @Override
-  public boolean add(Entry entry) {
-    if (super.contains(entry)) {
-      super.remove(entry);
+  public boolean addEntry(Entry entry) {
+    if (entryList.contains(entry)) {
+      entryList.remove(entry);
     }
-    entry.setDate(new GregorianCalendar());
+    entryList.add(0, entry);
+    Collections.sort(entryList);
 
-    return super.add(entry);
+    return true;
   }
 
   public void showMostRecentEntry() {
-    for (int i = this.size() - 1; i >= 0; i--) {
-      System.out.println(this.get(i));
+    for (int i = 0; i < entryList.size(); i++) {
+      System.out.println(entryList.get(i));
     }
   }
 }
