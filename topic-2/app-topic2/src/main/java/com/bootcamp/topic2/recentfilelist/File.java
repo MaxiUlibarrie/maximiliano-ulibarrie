@@ -52,6 +52,10 @@ public class File {
 
   @Override
   public String toString() {
-    return location.concat(name).concat(String.format(" [size = %s]", size));
+    return "File{" +
+        "name='" + name + '\'' +
+        ", location='" + location + '\'' +
+        ", size=" + size +
+        '}';
   }
 }
