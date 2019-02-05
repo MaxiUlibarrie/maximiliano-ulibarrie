@@ -44,10 +44,10 @@ public class File {
     }
     File aFile = (File) o;
 
-    boolean AreEqualsNames = (aFile.getName().equals(this.getName()));
-    boolean AreEqualsLocations = (aFile.getLocation().equals(this.getLocation()));
+    boolean areEqualsNames = aFile.getName().equals(this.getName());
+    boolean areEqualsLocations = aFile.getLocation().equals(this.getLocation());
 
-    return AreEqualsNames && AreEqualsLocations;
+    return areEqualsNames && areEqualsLocations;
   }
 
   @Override
