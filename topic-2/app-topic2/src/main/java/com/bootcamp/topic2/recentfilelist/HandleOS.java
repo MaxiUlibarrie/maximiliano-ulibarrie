@@ -26,6 +26,6 @@ public class HandleOS {
   }
 
   public void openFile(File myFile) {
-    recentFileList.add(myFile);
+    recentFileList.addFile(myFile);
   }
 }

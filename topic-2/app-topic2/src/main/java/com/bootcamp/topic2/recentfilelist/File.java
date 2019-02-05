@@ -1,13 +1,16 @@
 package com.bootcamp.topic2.recentfilelist;
 
+import java.util.Objects;
+
 public class File {
   private String name;
   private String location;
   private int size;
 
-  public File(String location, String name) {
+  public File(String location, String name, int size) {
     this.name = name;
     this.location = location;
+    this.size = size;
   }
 
   public String getName() {
@@ -36,18 +39,20 @@ public class File {
 
   @Override
   public boolean equals(Object o) {
-    if (o == this) {
+    if (this == o) {
       return true;
     }
-    if (!(o instanceof File)) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    File aFile = (File) o;
+    File file = (File) o;
+    return name.equals(file.name) &&
+        location.equals(file.location);
+  }
 
-    boolean areEqualsNames = aFile.getName().equals(this.getName());
-    boolean areEqualsLocations = aFile.getLocation().equals(this.getLocation());
-
-    return areEqualsNames && areEqualsLocations;
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, location);
   }
 
   @Override

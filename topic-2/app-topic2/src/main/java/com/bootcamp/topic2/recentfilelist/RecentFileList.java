@@ -7,13 +7,13 @@ import java.util.ArrayList;
  * the most recent file (last element of the list) to the less
  * recent (first element of the list).
  */
-public class RecentFileList extends ArrayList<File> {
-
+public class RecentFileList {
+  private ArrayList<File> fileList;
   private int maxSize;
 
   public RecentFileList(int maxSize) {
-    super(maxSize);
     this.maxSize = maxSize;
+    this.fileList = new ArrayList<File>(maxSize);
   }
 
   public int getMaxSize() {
@@ -24,14 +24,21 @@ public class RecentFileList extends ArrayList<File> {
     this.maxSize = maxSize;
   }
 
-  @Override
-  public boolean add(File f) {
-    if (super.contains(f)) {
-      super.remove(f);
-    } else if (this.getMaxSize() == super.size()) {
-      super.remove(0);
+  public ArrayList<File> getFileList() {
+    return fileList;
+  }
+
+  public void setFileList(ArrayList<File> fileList) {
+    this.fileList = fileList;
+  }
+
+  public boolean addFile(File file) {
+    if (fileList.contains(file)) {
+      fileList.remove(file);
+    } else if (this.getMaxSize() == fileList.size()) {
+      fileList.remove(0);
     }
 
-    return super.add(f);
+    return fileList.add(file);
   }
 }

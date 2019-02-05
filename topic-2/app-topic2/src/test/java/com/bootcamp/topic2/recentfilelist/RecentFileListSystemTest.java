@@ -7,40 +7,43 @@ public class RecentFileListSystemTest {
   @Test
   public void whenTheProgramIsRunForTheFirstTimeThenTheListIsEmpty() {
     RecentFileList recentFileList = new RecentFileList(4);
-    assertTrue(recentFileList.isEmpty());
+
+    assertTrue(recentFileList.getFileList().isEmpty());
   }
 
   @Test
   public void whenAFileIsOpenedThenItIsAddedToRecentList() {
-    File file = new File("C:/","example.java");
+    File file = new File("C:/","example.java",50);
     HandleOS handleOS = new HandleOS("Windows10", new RecentFileList(5));
     handleOS.openFile(file);
-    assertTrue(handleOS.getRecentFileList().contains(file));
+
+    assertTrue(handleOS.getRecentFileList().getFileList().contains(file));
   }
 
   @Test
   public void whenAnOpenedFileAlreadyExistsInRecentFileListThenItIsBumpedToTop() {
     RecentFileList recentFileList = new RecentFileList(4);
-    recentFileList.add(new File("C:/","example1.java"));
-    recentFileList.add(new File("C:/","example2.java"));
-    recentFileList.add(new File("C:/","example3.java"));
-    recentFileList.add(new File("C:/","example1.java"));
+    recentFileList.addFile(new File("C:/","example1.java",50));
+    recentFileList.addFile(new File("C:/","example2.java",50));
+    recentFileList.addFile(new File("C:/","example3.java",50));
+    recentFileList.addFile(new File("C:/","example1.java",50));
 
-    assertEquals(new File("C:/","example1.java"), recentFileList.get(recentFileList.size() - 1));
+    File lastFile = recentFileList.getFileList().get(recentFileList.getFileList().size() - 1);
+    assertEquals(new File("C:/","example1.java",50), lastFile);
   }
 
   @Test
   public void whenAnOpenedFileAlreadyExistsInRecentFileListThenItIsNotDuplicated() {
     RecentFileList recentFileList = new RecentFileList(4);
-    recentFileList.add(new File("C:/","example1.java"));
-    recentFileList.add(new File("C:/","example2.java"));
-    recentFileList.add(new File("C:/","example3.java"));
+    recentFileList.addFile(new File("C:/","example1.java",50));
+    recentFileList.addFile(new File("C:/","example2.java",50));
+    recentFileList.addFile(new File("C:/","example3.java",50));
 
-    File duplicatedFile = new File("C:/","example1.java");
-    recentFileList.add(duplicatedFile);
+    File duplicatedFile = new File("C:/","example1.java",50);
+    recentFileList.addFile(duplicatedFile);
 
     int amountDuplicated = 0;
-    for (File file : recentFileList) {
+    for (File file : recentFileList.getFileList()) {
       if (file.equals(duplicatedFile)) {
         amountDuplicated++;
         if (amountDuplicated == 2) break;
@@ -53,14 +56,15 @@ public class RecentFileListSystemTest {
   @Test
   public void whenAFileIsAddedAndListIsFullThenTheOldestFileIsRemoved() {
     RecentFileList recentFileList = new RecentFileList(3);
-    File fileToLeave = new File("C:/","example1.java");
-    recentFileList.add(fileToLeave);
-    recentFileList.add(new File("C:/","example2.java"));
-    recentFileList.add(new File("C:/","example3.java"));
-    File newFile = new File("C:/","example4.java");
-    recentFileList.add(newFile);
+    File fileToLeave = new File("C:/","example1.java",50);
+    recentFileList.addFile(fileToLeave);
+    recentFileList.addFile(new File("C:/","example2.java",50));
+    recentFileList.addFile(new File("C:/","example3.java",50));
+    File newFile = new File("C:/","example4.java",50);
+    recentFileList.addFile(newFile);
 
-    assertEquals(recentFileList.get(recentFileList.size() - 1), newFile);
-    assertFalse(recentFileList.contains(fileToLeave));
+    File lastFile = recentFileList.getFileList().get(recentFileList.getFileList().size() - 1);
+    assertEquals(lastFile, newFile);
+    assertFalse(recentFileList.getFileList().contains(fileToLeave));
   }
 }
