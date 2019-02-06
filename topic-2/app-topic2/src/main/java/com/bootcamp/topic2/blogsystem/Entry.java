@@ -76,8 +76,7 @@ public class Entry implements Comparable<Entry> {
         ", datetime=" + datetime +
         '}';
   }
-
-
+  
   @Override
   public int compareTo(Entry entry) {
     return entry.getDatetime().compareTo(this.datetime);

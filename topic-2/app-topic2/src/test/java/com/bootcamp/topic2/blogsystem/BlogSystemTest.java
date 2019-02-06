@@ -1,6 +1,7 @@
 package com.bootcamp.topic2.blogsystem;
 
 import com.bootcamp.topic2.blogsystemdao.EntryDAO;
+import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -15,15 +16,17 @@ public class BlogSystemTest {
     blog = new Blog("ownerName","www.blog.com");
 
     entryDAO = mock(EntryDAO.class);
-    when(entryDAO.recoveryById(1)).thenReturn(new Entry("title1","topic1","body1"));
-    when(entryDAO.recoveryById(2)).thenReturn(new Entry("title2","topic2","body2"));
-    when(entryDAO.recoveryById(3)).thenReturn(new Entry("title3","topic3","body3"));
-    when(entryDAO.recoveryById(4)).thenReturn(new Entry("title4","topic4","body4"));
+    ArrayList<Entry> entries = new ArrayList<>();
+    entries.add(new Entry("title0","topic0","body0"));
+    entries.add(new Entry("title1","topic1","body1"));
+    entries.add(new Entry("title2","topic2","body2"));
+    entries.add(new Entry("title3","topic3","body3"));
+    when(entryDAO.recoverMostRecentEntries()).thenReturn(entries);
   }
 
   @Test
   public void whenPostNewEntryThenItExistsInTheBlogList() {
-    Entry entry = entryDAO.recoveryById(1);
+    Entry entry = entryDAO.recoverMostRecentEntries().get(0);
     blog.addEntry(entry);
 
     assertTrue(blog.getEntryList().contains(entry));
@@ -31,36 +34,26 @@ public class BlogSystemTest {
 
   @Test
   public void whenDeleteExistingEntryThenItIsGoneFromTheBlog() {
-    Entry entry1 = entryDAO.recoveryById(1);
-    blog.addEntry(entry1);
+    blog.addEntry(entryDAO.recoverMostRecentEntries().get(0));
+    blog.addEntry(entryDAO.recoverMostRecentEntries().get(1));
+    blog.addEntry(entryDAO.recoverMostRecentEntries().get(2));
 
-    Entry entry2 = entryDAO.recoveryById(2);
-    blog.addEntry(entry2);
+    Entry entry1 = new Entry("title1","topic1","body1");
 
-    Entry entry3 = entryDAO.recoveryById(3);
-    blog.addEntry(entry3);
+    blog.deleteEntry(entry1);
 
-    blog.deleteEntry(entry2);
-
-    assertFalse(blog.getEntryList().contains(entry2));
+    assertFalse(blog.getEntryList().contains(entry1));
   }
 
   @Test
   public void whenShowMostRecentEntryThenTheseHaveToBeInOrderDate() {
-    Entry entry1 = entryDAO.recoveryById(1);
-    blog.addEntry(entry1);
+    blog.addEntry(entryDAO.recoverMostRecentEntries().get(0));
+    blog.addEntry(entryDAO.recoverMostRecentEntries().get(1));
+    blog.addEntry(entryDAO.recoverMostRecentEntries().get(2));
+    blog.addEntry(entryDAO.recoverMostRecentEntries().get(3));
 
-    Entry entry2 = entryDAO.recoveryById(2);
-    blog.addEntry(entry2);
-
-    Entry entry3 = entryDAO.recoveryById(3);
-    blog.addEntry(entry3);
-
-    Entry entry4 = entryDAO.recoveryById(4);
-    blog.addEntry(entry4);
-
-    assertFalse(entry1.getDatetime().isAfter(entry2.getDatetime()));
-    assertFalse(entry2.getDatetime().isAfter(entry3.getDatetime()));
-    assertFalse(entry3.getDatetime().isAfter(entry4.getDatetime()));
+    assertFalse(blog.getEntry(0).getDatetime().isAfter(blog.getEntry(1).getDatetime()));
+    assertFalse(blog.getEntry(1).getDatetime().isAfter(blog.getEntry(2).getDatetime()));
+    assertFalse(blog.getEntry(2).getDatetime().isAfter(blog.getEntry(3).getDatetime()));
   }
 }

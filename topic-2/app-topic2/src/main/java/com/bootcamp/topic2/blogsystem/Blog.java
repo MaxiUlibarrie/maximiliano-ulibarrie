@@ -42,6 +42,10 @@ public class Blog {
     this.entryList = entryList;
   }
 
+  public Entry getEntry(int index) {
+    return entryList.get(index);
+  }
+
   public boolean deleteEntry(Entry entry) {
     return entryList.remove(entry);
   }
