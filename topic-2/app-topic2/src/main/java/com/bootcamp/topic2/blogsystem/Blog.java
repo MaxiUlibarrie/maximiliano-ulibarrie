@@ -50,17 +50,15 @@ public class Blog {
     return false;
   }
 
-  public boolean addEntry(Entry entry) {
+  public void addEntry(Entry entry) {
     if (entryList.contains(entry)) {
       entryList.remove(entry);
     }
     entryList.add(0, entry);
     Collections.sort(entryList);
-
-    return true;
   }
 
-  public void showMostRecentEntry() {
+  public void showMostRecentEntries() {
     for (int i = 0; i < entryList.size(); i++) {
       System.out.println(entryList.get(i));
     }
