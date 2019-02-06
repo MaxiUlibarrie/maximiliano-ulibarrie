@@ -49,32 +49,19 @@ public class BlogSystemTest {
   @Test
   public void whenShowMostRecentEntryThenTheseHaveToBeInOrderDate() {
     Entry entry1 = entryDAO.recoveryById(1);
-    entry1.setDatetime(LocalDateTime.of(2019,2,5,16,40));
     blog.addEntry(entry1);
 
     Entry entry2 = entryDAO.recoveryById(2);
-    entry2.setDatetime(LocalDateTime.of(2019,2,5,16,43));
     blog.addEntry(entry2);
 
     Entry entry3 = entryDAO.recoveryById(3);
-    entry3.setDatetime(LocalDateTime.of(2018,2,5,10,43));
     blog.addEntry(entry3);
 
     Entry entry4 = entryDAO.recoveryById(4);
-    entry4.setDatetime(LocalDateTime.of(2019,1,1,10,43));
     blog.addEntry(entry4);
 
-    boolean areInOrder = true;
-    LocalDateTime previous, next;
-    for (int i = 0; i < blog.getEntryList().size() - 1; i++) {
-      previous = blog.getEntryList().get(i).getDatetime();
-      next = blog.getEntryList().get(i+1).getDatetime();
-
-      if (previous.isBefore(next)) {
-        areInOrder = false;
-      }
-    }
-
-    assertTrue(areInOrder);
+    assertFalse(entry1.getDatetime().isAfter(entry2.getDatetime()));
+    assertFalse(entry2.getDatetime().isAfter(entry3.getDatetime()));
+    assertFalse(entry3.getDatetime().isAfter(entry4.getDatetime()));
   }
 }

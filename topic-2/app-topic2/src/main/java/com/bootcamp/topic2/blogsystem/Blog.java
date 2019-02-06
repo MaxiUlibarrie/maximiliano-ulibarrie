@@ -44,10 +44,7 @@ public class Blog {
   }
 
   public boolean deleteEntry(Entry entry) {
-    if (entryList.contains(entry)) {
-      return entryList.remove(entry);
-    }
-    return false;
+    return entryList.remove(entry);
   }
 
   public void addEntry(Entry entry) {
@@ -55,7 +52,6 @@ public class Blog {
       entryList.remove(entry);
     }
     entryList.add(0, entry);
-    Collections.sort(entryList);
   }
 
   public void showMostRecentEntries() {
