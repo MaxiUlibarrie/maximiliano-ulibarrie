@@ -1,7 +1,6 @@
 package com.bootcamp.topic2.blogsystem;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Blog organize entries, the list is organized from
