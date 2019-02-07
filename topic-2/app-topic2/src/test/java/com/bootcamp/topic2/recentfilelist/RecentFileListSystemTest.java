@@ -28,7 +28,7 @@ public class RecentFileListSystemTest {
     recentFileList.addFile(new File("C:/","example3.java",50));
     recentFileList.addFile(new File("C:/","example1.java",50));
 
-    File lastFile = recentFileList.getFileList().get(recentFileList.getFileList().size() - 1);
+    File lastFile = recentFileList.getFileList().get(0);
     assertEquals(new File("C:/","example1.java",50), lastFile);
   }
 
@@ -50,6 +50,7 @@ public class RecentFileListSystemTest {
       }
     }
 
+    assertTrue(recentFileList.getFileList().size() == 3);
     assertTrue(amountDuplicated == 1);
   }
 
@@ -58,13 +59,16 @@ public class RecentFileListSystemTest {
     RecentFileList recentFileList = new RecentFileList(3);
     File fileToLeave = new File("C:/","example1.java",50);
     recentFileList.addFile(fileToLeave);
+
     recentFileList.addFile(new File("C:/","example2.java",50));
     recentFileList.addFile(new File("C:/","example3.java",50));
-    File newFile = new File("C:/","example4.java",50);
-    recentFileList.addFile(newFile);
 
-    File lastFile = recentFileList.getFileList().get(recentFileList.getFileList().size() - 1);
-    assertEquals(lastFile, newFile);
+    File addedFile = new File("C:/","example4.java",50);
+    recentFileList.addFile(addedFile);
+
+    File oldestFile = recentFileList.getFileList().get(0);
+
+    assertEquals(oldestFile, addedFile);
     assertFalse(recentFileList.getFileList().contains(fileToLeave));
   }
 }

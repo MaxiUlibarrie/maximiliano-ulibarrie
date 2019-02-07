@@ -3,7 +3,7 @@ package com.bootcamp.topic2.blogsystem;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Entry implements Comparable<Entry> {
+public class Entry {
   private String title;
   private String topic;
   private String body;
@@ -75,10 +75,5 @@ public class Entry implements Comparable<Entry> {
         ", body='" + body + '\'' +
         ", datetime=" + datetime +
         '}';
-  }
-  
-  @Override
-  public int compareTo(Entry entry) {
-    return entry.getDatetime().compareTo(this.datetime);
   }
 }

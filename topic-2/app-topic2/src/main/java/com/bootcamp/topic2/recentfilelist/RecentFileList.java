@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 /**
  * RecentFileList organize files, the list is organized from
- * the most recent file (last element of the list) to the less
- * recent (first element of the list).
+ * the most recent file (first element of the list) to the less
+ * recent (last element of the list).
  */
 public class RecentFileList {
   private ArrayList<File> fileList;
@@ -32,13 +32,13 @@ public class RecentFileList {
     this.fileList = fileList;
   }
 
-  public boolean addFile(File file) {
+  public void addFile(File file) {
     if (fileList.contains(file)) {
       fileList.remove(file);
     } else if (this.getMaxSize() == fileList.size()) {
-      fileList.remove(0);
+      fileList.remove(fileList.size()-1);
     }
 
-    return fileList.add(file);
+    fileList.add(0,file);
   }
 }
