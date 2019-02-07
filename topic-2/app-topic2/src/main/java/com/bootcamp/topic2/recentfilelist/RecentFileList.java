@@ -1,6 +1,7 @@
 package com.bootcamp.topic2.recentfilelist;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * RecentFileList organize files, the list is organized from
@@ -8,12 +9,12 @@ import java.util.ArrayList;
  * recent (last element of the list).
  */
 public class RecentFileList {
-  private ArrayList<File> fileList;
+  private List<File> fileList;
   private int maxSize;
 
   public RecentFileList(int maxSize) {
     this.maxSize = maxSize;
-    this.fileList = new ArrayList<File>(maxSize);
+    this.fileList = new ArrayList<>(maxSize);
   }
 
   public int getMaxSize() {
@@ -24,11 +25,11 @@ public class RecentFileList {
     this.maxSize = maxSize;
   }
 
-  public ArrayList<File> getFileList() {
+  public List<File> getFileList() {
     return fileList;
   }
 
-  public void setFileList(ArrayList<File> fileList) {
+  public void setFileList(List<File> fileList) {
     this.fileList = fileList;
   }
 

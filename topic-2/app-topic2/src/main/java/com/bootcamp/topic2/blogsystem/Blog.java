@@ -1,6 +1,7 @@
 package com.bootcamp.topic2.blogsystem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Blog organize entries, the list is organized from
@@ -8,14 +9,14 @@ import java.util.ArrayList;
  * recent (LAST element of the list).
  */
 public class Blog {
-  private ArrayList<Entry> entryList;
+  private List<Entry> entryList;
   private String ownerName;
   private String url;
 
   public Blog(String ownerName, String url) {
     this.ownerName = ownerName;
     this.url = url;
-    this.entryList = new ArrayList<Entry>();
+    this.entryList = new ArrayList<>();
   }
 
   public String getOwnerName() {
@@ -34,11 +35,11 @@ public class Blog {
     this.url = url;
   }
 
-  public ArrayList<Entry> getEntryList() {
+  public List<Entry> getEntryList() {
     return entryList;
   }
 
-  public void setEntryList(ArrayList<Entry> entryList) {
+  public void setEntryList(List<Entry> entryList) {
     this.entryList = entryList;
   }
 

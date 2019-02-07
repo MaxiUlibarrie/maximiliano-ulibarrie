@@ -26,10 +26,9 @@ public class BlogSystemTest {
 
   @Test
   public void whenPostNewEntryThenItExistsInTheBlogList() {
-    Entry entry = entryDAO.recoverMostRecentEntries().get(0);
-    blog.addEntry(entry);
+    blog.addEntry(entryDAO.recoverMostRecentEntries().get(0));
 
-    assertTrue(blog.getEntryList().contains(entry));
+    assertTrue(blog.getEntryList().contains(entryDAO.recoverMostRecentEntries().get(0)));
   }
 
   @Test
@@ -38,11 +37,9 @@ public class BlogSystemTest {
     blog.addEntry(entryDAO.recoverMostRecentEntries().get(1));
     blog.addEntry(entryDAO.recoverMostRecentEntries().get(2));
 
-    Entry entry1 = new Entry("title1","topic1","body1");
+    blog.deleteEntry(new Entry("title1","topic1","body1"));
 
-    blog.deleteEntry(entry1);
-
-    assertFalse(blog.getEntryList().contains(entry1));
+    assertFalse(blog.getEntryList().contains(new Entry("title1","topic1","body1")));
   }
 
   @Test
