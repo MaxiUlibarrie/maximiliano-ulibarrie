@@ -58,13 +58,14 @@ public class Entry {
     }
     Entry entry = (Entry) o;
     return title.equals(entry.title) &&
-        Objects.equals(topic, entry.topic) &&
-        Objects.equals(datetime, entry.datetime);
+        topic.equals(entry.topic) &&
+        body.equals(entry.body) &&
+        datetime.equals(entry.datetime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(title, topic, datetime);
+    return Objects.hash(title, topic, body, datetime);
   }
 
   @Override

@@ -51,6 +51,10 @@ public class Blog {
     return entryList.remove(entry);
   }
 
+  public boolean containsEntry(Entry entry) {
+    return entryList.contains(entry);
+  }
+
   public void addEntry(Entry entry) {
     if (entryList.contains(entry)) {
       entryList.remove(entry);

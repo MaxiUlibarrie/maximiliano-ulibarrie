@@ -33,6 +33,22 @@ public class RecentFileList {
     this.fileList = fileList;
   }
 
+  public File getFile(int index) {
+    return fileList.get(index);
+  }
+
+  public boolean containsFile(File file) {
+    return fileList.contains(file);
+  }
+
+  public boolean isEmptyOfFiles() {
+    return fileList.isEmpty();
+  }
+
+  public int amountOfFiles() {
+    return fileList.size();
+  }
+
   public void addFile(File file) {
     if (fileList.contains(file)) {
       fileList.remove(file);

@@ -46,13 +46,14 @@ public class File {
       return false;
     }
     File file = (File) o;
-    return name.equals(file.name) &&
+    return size == file.size &&
+        name.equals(file.name) &&
         location.equals(file.location);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, location);
+    return Objects.hash(name, location, size);
   }
 
   @Override

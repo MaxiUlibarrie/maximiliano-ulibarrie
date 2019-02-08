@@ -12,7 +12,7 @@ public class BlogSystemTest {
   private Blog blog;
 
   @Before
-  public void setup() {
+  public void setUp() {
     blog = new Blog("ownerName","www.blog.com");
 
     entryDAO = mock(EntryDAO.class);
@@ -28,7 +28,7 @@ public class BlogSystemTest {
   public void whenPostNewEntryThenItExistsInTheBlogList() {
     blog.addEntry(entryDAO.recoverMostRecentEntries().get(0));
 
-    assertTrue(blog.getEntryList().contains(entryDAO.recoverMostRecentEntries().get(0)));
+    assertTrue(blog.containsEntry(entryDAO.recoverMostRecentEntries().get(0)));
   }
 
   @Test
@@ -39,7 +39,7 @@ public class BlogSystemTest {
 
     blog.deleteEntry(new Entry("title1","topic1","body1"));
 
-    assertFalse(blog.getEntryList().contains(new Entry("title1","topic1","body1")));
+    assertFalse(blog.containsEntry(new Entry("title1","topic1","body1")));
   }
 
   @Test
