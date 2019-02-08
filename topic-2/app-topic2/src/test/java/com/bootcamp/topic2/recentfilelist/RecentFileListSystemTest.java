@@ -45,7 +45,7 @@ public class RecentFileListSystemTest {
       }
     }
 
-    assertTrue(recentFileList.getFileList().size() == 3);
+    assertTrue(recentFileList.amountOfFiles() == 3);
     assertTrue(amountDuplicated == 1);
     assertEquals(newFile, recentFileList.getFile(0));
   }
@@ -58,7 +58,7 @@ public class RecentFileListSystemTest {
 
     recentFileList.addFile(newFile);
 
-    assertTrue(recentFileList.getFileList().size() == 3);
+    assertTrue(recentFileList.amountOfFiles() == 3);
     assertEquals(newFile,recentFileList.getFile(0));
     assertFalse(recentFileList.containsFile(oldestFile));
   }
