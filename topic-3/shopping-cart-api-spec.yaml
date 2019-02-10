@@ -6,10 +6,10 @@ info:
 host: "shopping-cart.com"
 basePath: "/"
 tags:
+- name: "item"
+  description: "Access to all items operations"
 - name: "product"
-  description: "Access to individual product operations"
-- name: "products"
-  description: "Access to all products operations"
+  description: "Access to all product operations"
 schemes:
 - "https"
 - "http"
@@ -35,19 +35,21 @@ paths:
         schema:
           $ref: "#/definitions/Product"
       responses:
+        200:
+          description: "successful operation"
         405:
           description: "Invalid input"
       security:
       - shoppingcart_auth:
         - "write:products"
         - "read:products"
-  /product/{productId}:
+  /item/{productId}:
     get:
       tags:
-      - "product"
-      summary: "Find product by ID"
-      description: "Returns a single product"
-      operationId: "getProductById"
+      - "item"
+      summary: "Find item by product ID"
+      description: "Returns a single item"
+      operationId: "getItemById"
       produces:
       - "application/xml"
       - "application/json"
@@ -62,54 +64,19 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/Product"
+            $ref: "#/definitions/Item"
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Product not found"
+          description: "Item not found"
       security:
       - api_key: []
-    post:
-      tags:
-      - "product"
-      summary: "Updates a product in the cart with form data"
-      description: ""
-      operationId: "addProductById"
-      consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "productId"
-        in: "path"
-        description: "ID of product that needs to be updated"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "name"
-        in: "formData"
-        description: "Updated name of the product"
-        required: false
-        type: "string"
-      - name: "price"
-        in: "formData"
-        description: "Updated price of the product"
-        required: false
-        type: "number"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - shoppingcart_auth:
-        - "write:products"
-        - "read:products"
     delete:
       tags:
-      - "product"
-      summary: "Delete a product"
+      - "item"
+      summary: "Delete a item from the cart"
       description: ""
-      operationId: "deleteProduct"
+      operationId: "deleteItemById"
       produces:
       - "application/xml"
       - "application/json"
@@ -120,7 +87,7 @@ paths:
         type: "string"
       - name: "productId"
         in: "path"
-        description: "Productt id to delete"
+        description: "Item-Product id to delete"
         required: true
         type: "integer"
         format: "int64"
@@ -130,18 +97,18 @@ paths:
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Product not found"
+          description: "Item not found"
       security:
       - shoppingcart_auth:
         - "write:products"
         - "read:products"
-  /products:
+  /items:
     get:
       tags:
-      - "products"
-      summary: "Get all products in the cart"
-      description: "Returns all products in the cart"
-      operationId: "getAllProducts"
+      - "item"
+      summary: "Get all items in the cart"
+      description: "Returns all items in the cart"
+      operationId: "getCart"
       produces:
       - "application/xml"
       - "application/json"
@@ -151,17 +118,17 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/Product"
+              $ref: "#/definitions/Item"
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Products not found"
+          description: "Items not found"
       security:
       - api_key: []
     delete:
       tags:
-      - "products"
-      summary: "Delete all products from the cart"
+      - "item"
+      summary: "Delete all items from the cart"
       description: ""
       operationId: "clearCart"
       produces:
@@ -173,18 +140,18 @@ paths:
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Products not found"
+          description: "Items not found"
       security:
       - shoppingcart_auth:
         - "write:products"
         - "read:products"
-  /total:
+  /checkout:
     get:
       tags:
-      - "product"
+      - "item"
       summary: "Show total price of the cart"
       description: "Returns the total price of the cart"
-      operationId: "getTotalPrice"
+      operationId: "checkOut"
       produces:
       - "application/xml"
       - "application/json"
@@ -217,6 +184,7 @@ definitions:
   Product:
     type: "object"
     required: 
+    - "id"
     - "name"
     - "price"
     properties:
@@ -225,10 +193,25 @@ definitions:
         format: "int64"
       name:
         type: "string"
-        example: "flour 500 gr"
+        example: "phone x"
       price:
         type: "number"
         format: "double"
         example: 25
     xml:
       name: "Product"
+  Item:
+    type: "object"
+    required:
+    - "product"
+    - "amount"
+    properties:
+      product:
+        type: "object"
+        $ref: "#/definitions/Product"
+      amount:
+        type: "integer"
+        format: "int64"
+        example: 6
+    xml:
+      name: "Item"
