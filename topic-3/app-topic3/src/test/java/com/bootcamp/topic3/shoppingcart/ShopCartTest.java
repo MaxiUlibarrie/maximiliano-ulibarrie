@@ -13,7 +13,7 @@ import org.junit.Test;
 public class ShopCartTest {
   private ShopCart shopCart;
   private Product product1, product2;
-  public static final double DELTA_DOUBLE = 0.0;
+  private static final double DELTA_DOUBLE = 0.0;
 
   @Before
   public void setUp() {
