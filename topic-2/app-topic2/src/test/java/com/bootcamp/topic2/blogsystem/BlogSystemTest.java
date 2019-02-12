@@ -1,11 +1,9 @@
 package com.bootcamp.topic2.blogsystem;
 
 import com.bootcamp.topic2.blogsystemdao.EntryDAO;
-import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class BlogSystemTest {
   private EntryDAO entryDAO;
@@ -14,14 +12,7 @@ public class BlogSystemTest {
   @Before
   public void setUp() {
     blog = new Blog("ownerName","www.blog.com");
-
-    entryDAO = mock(EntryDAO.class);
-    ArrayList<Entry> entries = new ArrayList<>();
-    entries.add(new Entry("title0","topic0","body0"));
-    entries.add(new Entry("title1","topic1","body1"));
-    entries.add(new Entry("title2","topic2","body2"));
-    entries.add(new Entry("title3","topic3","body3"));
-    when(entryDAO.recoverMostRecentEntries()).thenReturn(entries);
+    entryDAO = new FakeEntryDAO();
   }
 
   @Test
