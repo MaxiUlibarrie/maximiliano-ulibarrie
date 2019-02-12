@@ -33,27 +33,11 @@ public class Product {
   }
 
   /**
-   * Replaces the product id.
-   * @param id
-   */
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  /**
    * Returns product name.
    * @return
    */
   public String getName() {
     return name;
-  }
-
-  /**Replaces the product name.
-   *
-   * @param name
-   */
-  public void setName(String name) {
-    this.name = name;
   }
 
   /**
@@ -62,14 +46,6 @@ public class Product {
    */
   public double getPrice() {
     return price;
-  }
-
-  /**
-   * Replaces the product price.
-   * @param price
-   */
-  public void setPrice(double price) {
-    this.price = price;
   }
 
   /**

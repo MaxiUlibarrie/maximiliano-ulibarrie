@@ -71,12 +71,14 @@ public class ShopCartTest {
   }
 
   @Test
-  public void whenGetCheckOutThenItsReturnsCorrectTotal() {
+  public void whenDoCheckOutThenItsReturnsCorrectTotal() {
     shopCart.addToCart(product1);
     shopCart.addToCart(product2);
     shopCart.addToCart(product2);
 
-    double checkout = 600 * 2 + 120 * 3;
-    assertEquals(checkout,shopCart.checkOut(),DELTA_DOUBLE);
+    double totalPrice = 600 * 2 + 120 * 3;
+
+    assertEquals(totalPrice,shopCart.doCheckOut(),DELTA_DOUBLE);
+    assertTrue(shopCart.isCheckedOut());
   }
 }

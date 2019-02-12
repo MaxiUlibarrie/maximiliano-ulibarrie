@@ -39,27 +39,11 @@ public class Item {
   }
 
   /**
-   * Replaces the product with a given one.
-   * @param product
-   */
-  public void setProduct(Product product) {
-    this.product = product;
-  }
-
-  /**
    * Returns the amount.
    * @return
    */
   public int getAmount() {
     return amount;
-  }
-
-  /**
-   * Replaces the amount with a given one.
-   * @param amount
-   */
-  public void setAmount(int amount) {
-    this.amount = amount;
   }
 
   /**

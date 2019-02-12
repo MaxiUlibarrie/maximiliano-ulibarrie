@@ -7,7 +7,7 @@ import java.util.List;
  * Allows visitors to collect items over multiple product.
  * ShopCart may view the contents of their shopping cart
  * at any time and may add or delete items as needed,
- * and do the checkout.
+ * and do the check out.
  */
 public class ShopCart {
 
@@ -15,12 +15,18 @@ public class ShopCart {
    * Stores the items.
    */
   private List<Item> cart;
+  /**
+   * Stores the state of the cart, if the visitor
+   * paid the shop.
+   */
+  private boolean checkedOut;
 
   /**
    * Constructs a new cart as a ArrayList.
    */
   public ShopCart() {
     this.cart = new ArrayList<>();
+    this.checkedOut = false;
   }
 
   /**
@@ -29,6 +35,7 @@ public class ShopCart {
    */
   public ShopCart(List<Item> cart) {
     this.cart = cart;
+    this.checkedOut = false;
   }
 
   /**
@@ -40,11 +47,11 @@ public class ShopCart {
   }
 
   /**
-   * Sets the current cart by a given cart.
-   * @param cart
+   * Checks if the cart is checked out.
+   * @return
    */
-  public void setCart(List<Item> cart) {
-    this.cart = cart;
+  public boolean isCheckedOut() {
+    return checkedOut;
   }
 
   /**
@@ -53,10 +60,9 @@ public class ShopCart {
    * @return true if the given product exists in the cart
    */
   public boolean containsProduct(Product product) {
-    for (Item item : cart) {
-      if (item.getProduct().equals(product)) return true;
-    }
-    return false;
+    Item item = getItemById(product.getId());
+
+    return (item != null);
   }
 
   /**
@@ -67,11 +73,9 @@ public class ShopCart {
    * @return true if the operation was successful
    */
   public boolean addToCart(Product product) {
-    for (Item item : cart) {
-      if (item.getProduct().equals(product)) {
-        item.increaseAmount();
-        return true;
-      }
+    if (containsProduct(product)) {
+      getItemById(product.getId()).increaseAmount();
+      return true;
     }
 
     return cart.add(new Item(product));
@@ -82,7 +86,7 @@ public class ShopCart {
    * @param id product
    * @return the item associated with the product id
    */
-  public Item getItemById(int id) {
+  public Item getItemById(long id) {
     for (Item item : cart) {
       if (item.getProduct().getId() == id) {
         return item;
@@ -97,7 +101,7 @@ public class ShopCart {
    * @param id product
    * @return true if the operation was successful
    */
-  public boolean deleteItemById(int id) {
+  public boolean deleteItemById(long id) {
     return cart.removeIf(item -> (item.getProduct().getId() == id));
   }
 
@@ -109,14 +113,16 @@ public class ShopCart {
   }
 
   /**
-   * Gets checkout of all items from the cart.
+   * Gets checkedOut of all items from the cart.
    * @return total price
    */
-  public double checkOut() {
-    double checkout = 0;
+  public double doCheckOut() {
+    double totalPrice = 0;
     for (Item item : cart) {
-      checkout += item.getProduct().getPrice() * item.getAmount();
+      totalPrice += item.getProduct().getPrice() * item.getAmount();
     }
-    return checkout;
+    checkedOut = true;
+
+    return totalPrice;
   }
 }
