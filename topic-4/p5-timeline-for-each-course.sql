@@ -22,7 +22,8 @@ begin
                         else "Wrong day"
                       end," ",s.time_from," - ",s.time_to,": ",c.name) as schedule
         from Teacher as t join Course as c on t.id_teacher = c.id_teacher
-            join Schedule as s on s.id_course = c.id_course;
+            join Schedule as s on s.id_course = c.id_course
+		where t.id_teacher = given_teacher;
 
     else
 
