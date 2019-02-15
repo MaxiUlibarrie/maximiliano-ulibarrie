@@ -1,6 +1,6 @@
-create database high-school;
+create database high_school;
 
-use high-school;
+use high_school;
 
 create table Student (
     id_student integer not null primary key,
