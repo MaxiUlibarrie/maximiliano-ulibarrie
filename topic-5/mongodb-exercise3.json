@@ -1,0 +1,14 @@
+use high_school
+
+db.system.js.save({
+    _id : "allCoursesOfTeacher",
+    value : function(given_teacher) {
+        return db.course.find(
+            { teacher_id : given_teacher }
+        );
+    }
+})
+
+db.loadServerScripts()
+
+allCoursesOfTeacher(1)

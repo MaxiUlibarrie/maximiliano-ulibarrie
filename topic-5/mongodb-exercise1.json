@@ -1,0 +1,47 @@
+use high_school
+
+db.createCollection("student")
+
+db.student.insertMany([
+    { student_id : 1, first_name : "Marcos", last_name : "Valenzuela", registration_number : 1, date_of_birthday : new Date("1992-05-18T16:00:00Z") },
+    { student_id : 2, first_name : "Maria", last_name : "Rodriguez", registration_number : 1, date_of_birthday : new Date("1989-06-18T16:00:00Z") },
+    { student_id : 3, first_name : "Sebastian", last_name : "Romero", registration_number : 1, date_of_birthday : new Date("1993-05-18T16:00:00Z") },
+    { student_id : 4, first_name : "Ramon", last_name : "Fernadez", registration_number : 1, date_of_birthday : new Date("1994-05-10T16:00:00Z") },
+    { student_id : 5, first_name : "Marcelo", last_name : "Geno", registration_number : 1, date_of_birthday : new Date("1994-07-18T16:00:00Z") }
+])
+
+db.teacher.insertMany([
+    { teacher_id : 1, first_name : "Sabrina", last_name : "Pinarelo", date_of_birthday : new Date("1980-07-18T16:00:00Z") },
+    { teacher_id : 2, first_name : "Natalia", last_name : "Maldini", date_of_birthday : new Date("1980-07-18T16:00:00Z") },
+    { teacher_id : 3, first_name : "Jorge", last_name : "Cuevas", date_of_birthday : new Date("1980-07-18T16:00:00Z") }
+])
+
+db.course.insertMany([
+    { course_id : 1, teacher_id: 1, name : "Physics" },
+    { course_id : 2, teacher_id: 2, name : "Mathematics" },
+    { course_id : 3, teacher_id: 3, name : "Introduction to algorithms" }
+])
+
+db.schedule.insertMany([
+    { schedule_id : 1, course_id : 1, day_of_week : 0, time_from : "18:00", time_to : "21:00" },
+    { schedule_id : 2, course_id : 1, day_of_week : 2, time_from : "18:00", time_to : "21:00" },
+    { schedule_id : 3, course_id : 2, day_of_week : 1, time_from : "18:00", time_to : "21:00" },
+    { schedule_id : 4, course_id : 2, day_of_week : 3, time_from : "18:00", time_to : "21:00" },
+    { schedule_id : 5, course_id : 3, day_of_week : 4, time_from : "18:00", time_to : "21:00" }
+])
+
+db.note.insertMany([
+    { course_id : 1, student_id : 1, first_partial_note : 6, second_partial_note : 7, third_partial_note : 8, final_note : 8 },
+    { course_id : 1, student_id : 2, first_partial_note : 5, second_partial_note : 7, third_partial_note : 6, final_note : 4 },
+    { course_id : 1, student_id : 3, first_partial_note : 3, second_partial_note : 5, third_partial_note : 5, final_note : 5 },
+    { course_id : 1, student_id : 4, first_partial_note : 7, second_partial_note : 3, third_partial_note : 3, final_note : 6 },
+    { course_id : 1, student_id : 5, first_partial_note : 4, second_partial_note : 9, third_partial_note : 7, final_note : 7 }
+])
+
+db.assist.insert([
+    { course : 1, student_id : 1, year : 2019 },
+    { course : 1, student_id : 2, year : 2019 },
+    { course : 2, student_id : 3, year : 2019 },
+    { course : 3, student_id : 4, year : 2019 },
+    { course : 1, student_id : 5, year : 2019 },
+])

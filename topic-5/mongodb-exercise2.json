@@ -1,0 +1,14 @@
+use high_school
+
+db.system.js.save({
+    _id : "allPassedStudents",
+    value : function(given_course) {
+        return db.note.find({
+            $and : [ { final_note : { $gt : 4 } }, { course_id : given_course } ]
+        });
+    }
+})
+
+db.loadServerScripts()
+
+allPassedStudents(1)
