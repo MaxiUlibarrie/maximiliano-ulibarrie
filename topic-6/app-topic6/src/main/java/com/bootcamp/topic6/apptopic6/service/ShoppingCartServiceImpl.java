@@ -1,11 +1,13 @@
 package com.bootcamp.topic6.apptopic6.service;
 
-import com.bootcamp.topic6.apptopic6.model.LineSale;
+import com.bootcamp.topic6.apptopic6.dao.CartDAO;
+import com.bootcamp.topic6.apptopic6.dao.CartItemDAO;
+import com.bootcamp.topic6.apptopic6.dao.LineSaleDAO;
+import com.bootcamp.topic6.apptopic6.dao.ProductDAO;
+import com.bootcamp.topic6.apptopic6.dao.SaleDAO;
+import com.bootcamp.topic6.apptopic6.model.Cart;
+import com.bootcamp.topic6.apptopic6.model.CartItem;
 import com.bootcamp.topic6.apptopic6.model.Product;
-import com.bootcamp.topic6.apptopic6.model.Sale;
-import com.bootcamp.topic6.apptopic6.repository.SaleRepository;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -13,81 +15,55 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
-  private List<Item> itemList;
-  private boolean checkedOut;
+  private final ProductDAO productDAO;
+  private final SaleDAO saleDAO;
+  private final LineSaleDAO lineSaleDAO;
+  private final CartItemDAO cartItemDAO;
 
-  private final SaleRepository saleRepository;
+  private Cart cart;
 
-  public ShoppingCartServiceImpl(SaleRepository saleRepository) {
-    this.saleRepository = saleRepository;
-    this.itemList = new ArrayList<>();
-    this.checkedOut = false;
+  public ShoppingCartServiceImpl(ProductDAO productDAO,
+      SaleDAO saleDAO, LineSaleDAO lineSaleDAO,
+      CartItemDAO cartItemDAO, CartDAO cartDAO) {
+    this.productDAO = productDAO;
+    this.saleDAO = saleDAO;
+    this.lineSaleDAO = lineSaleDAO;
+    this.cartItemDAO = cartItemDAO;
+    this.cart = cartDAO.save(new Cart());
   }
 
   @Override
-  public List<Item> getAllItems() {
-    return Collections.unmodifiableList(itemList);
+  public List<CartItem> getAllCartItems() {
+    return Collections.unmodifiableList(cart.getCartItemList());
   }
 
   @Override
-  public boolean addToCart(Product product) {
-    if (getItemByProduct(product) != null) {
-      getItemByProduct(product).incrementQuantity();
-      return true;
-    }
+  public boolean addToCart(Long idProduct, Integer quantity) {
+    if (!productDAO.findById(idProduct).isPresent()) return false;
 
-    boolean asd = itemList.add(new Item(product));
+    CartItem newCartItem = new CartItem(cart,idProduct,quantity);
+    cartItemDAO.save(newCartItem);
 
-    System.out.println(itemList.get(0));
-
-    return asd;
+    return true;
   }
 
   @Override
-  public Product getProductById(Long id) {
-    return getItemByProductId(id).getProduct();
+  public Product getProductById(Long idProduct) {
+    return null;
   }
 
   @Override
-  public Item getItemByProductId(Long id) {
-    return itemList.stream()
-        .filter(item -> item.getProduct().getId() == id)
-        .findAny()
-        .get();
+  public boolean removeProductById(Long id, Integer quantity) {
+    return false;
   }
 
   @Override
-  public boolean deleteProductById(Long id) {
-    return itemList
-        .removeIf(item -> item.getProduct().getId() == id);
-  }
-
-  @Override
-  public void clearCart() {
-    itemList.clear();
+  public boolean clearCart() {
+    return false;
   }
 
   @Override
   public double doCheckOut() {
-    List<LineSale> lineSaleList = new ArrayList<>();
-    double totalPrice = 0;
-    for (Item item : itemList) {
-      totalPrice += item.getProduct().getPrice() * item.getQuantity();
-      LineSale lineSale = new LineSale(item.getProduct(),item.getQuantity());
-      lineSaleList.add(lineSale);
-    }
-    Sale newSale = new Sale(lineSaleList, LocalDateTime.now());
-    saleRepository.save(newSale);
-    checkedOut = true;
-
-    return totalPrice;
-  }
-
-  private Item getItemByProduct(Product product) {
-    return itemList.stream()
-        .filter(item -> item.getProduct().equals(product))
-        .findAny()
-        .map(item -> { return item; })
-        .orElseGet(() -> { return null; });
+    return 0;
   }
 }
