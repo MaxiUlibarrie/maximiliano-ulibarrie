@@ -20,27 +20,23 @@ import org.springframework.stereotype.Service;
 @Service("shoppingCartService")
 public class ShoppingCartServiceImp implements ShoppingCartService {
 
-
-  private final UserRepository userRepo;
-  private final CartRepository cartRepo;
-  private final CartItemRepository cartItemRepo;
-  private final ProductRepository productRepo;
-  private final SaleRepository saleRepo;
-  private final LineSaleRepository lineSaleRepo;
+  @Autowired
+  private UserRepository userRepo;
 
   @Autowired
-  public ShoppingCartServiceImp(UserRepository userRepo,
-      CartRepository cartRepo,
-      CartItemRepository cartItemRepo,
-      ProductRepository productRepo, SaleRepository saleRepo,
-      LineSaleRepository lineSaleRepo) {
-    this.userRepo = userRepo;
-    this.cartRepo = cartRepo;
-    this.cartItemRepo = cartItemRepo;
-    this.productRepo = productRepo;
-    this.saleRepo = saleRepo;
-    this.lineSaleRepo = lineSaleRepo;
-  }
+  private CartRepository cartRepo;
+
+  @Autowired
+  private CartItemRepository cartItemRepo;
+
+  @Autowired
+  private ProductRepository productRepo;
+
+  @Autowired
+  private SaleRepository saleRepo;
+
+  @Autowired
+  private LineSaleRepository lineSaleRepo;
 
   @Override
   public boolean createCart(Long iduser) {

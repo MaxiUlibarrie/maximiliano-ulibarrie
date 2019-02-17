@@ -9,12 +9,8 @@ import org.springframework.stereotype.Service;
 @Service("cartService")
 public class CartServiceImp implements CartService {
 
-  private final CartRepository cartRepo;
-
   @Autowired
-  public CartServiceImp(CartRepository cartRepo) {
-    this.cartRepo = cartRepo;
-  }
+  private CartRepository cartRepo;
 
   @Override
   public List<Cart> getAllCarts() {
