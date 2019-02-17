@@ -2,10 +2,12 @@ package com.bootcamp.topic6.apptopic6.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -13,41 +15,51 @@ public class CartItem {
 
   @Id
   @GeneratedValue
-  @JsonIgnore
-  private Long id;
-
-  @ManyToOne
-  @JsonIgnore
-  private Cart cart;
+  private Long idcartitem;
 
   @Column
-  private Long idProduct;
+  private Long idcart;
+
+  @Column
+  private Long idproduct;
 
   @Column
   private int quantity;
 
-  public CartItem(Cart cart, Long idProduct, int quantity) {
-    this.cart = cart;
-    this.idProduct = idProduct;
+  public CartItem() {}
+
+  public CartItem(Long idcart, Long idproduct, int quantity) {
+    this.idcart = idcart;
+    this.idproduct = idproduct;
     this.quantity = quantity;
   }
 
-  public CartItem() {}
-
-  public Long getId() {
-    return id;
+  public Long getIdcartitem() {
+    return idcartitem;
   }
 
-  public Cart getCart() {
-    return cart;
+  public Long getIdcart() {
+    return idcart;
   }
 
-  public Long getIdProduct() {
-    return idProduct;
+  public Long getIdproduct() {
+    return idproduct;
   }
 
   public int getQuantity() {
     return quantity;
+  }
+
+  public void incrementQuantity(int increase) {
+    quantity += increase;
+  }
+
+  public void decrementQuantity(int decrease) {
+    if (quantity > decrease) {
+      quantity -= decrease;
+    } else {
+      quantity = 0;
+    }
   }
 
   @Override
@@ -60,13 +72,13 @@ public class CartItem {
     }
     CartItem cartItem = (CartItem) o;
     return quantity == cartItem.quantity &&
-        Objects.equals(id, cartItem.id) &&
-        Objects.equals(cart, cartItem.cart) &&
-        Objects.equals(idProduct, cartItem.idProduct);
+        Objects.equals(idcartitem, cartItem.idcartitem) &&
+        Objects.equals(idcart, cartItem.idcart) &&
+        Objects.equals(idproduct, cartItem.idproduct);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, cart, idProduct, quantity);
+    return Objects.hash(idcartitem, idcart, idproduct, quantity);
   }
 }

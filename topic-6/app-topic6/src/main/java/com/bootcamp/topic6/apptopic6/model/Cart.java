@@ -6,30 +6,38 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
 public class Cart {
 
   @Id @GeneratedValue
-  private Long id;
+  private Long idcart;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(cascade = CascadeType.ALL)
   private List<CartItem> cartItemList;
+
+  @ManyToOne
+  @JoinColumn(name = "iduser")
+  private User user;
 
   @Column
   private boolean checkedOut;
 
-  public Cart() {
+  public Cart(User user) {
+    this.user = user;
     this.cartItemList = new ArrayList<>();
     this.checkedOut = false;
   }
 
-  public Long getId() {
-    return id;
+  public Cart() {}
+
+  public Long getIdcart() {
+    return idcart;
   }
 
   public List<CartItem> getCartItemList() {
@@ -38,6 +46,28 @@ public class Cart {
 
   public boolean isCheckedOut() {
     return checkedOut;
+  }
+
+  public void setCheckedOut(boolean checkedOut) {
+    this.checkedOut = checkedOut;
+  }
+
+  public boolean existsProduct(Long idproduct) {
+    return cartItemList.stream()
+        .anyMatch(cartItem -> cartItem.getIdproduct().equals(idproduct));
+  }
+
+  public CartItem getCartItemByIdProduct(Long idproduct) {
+    return cartItemList.stream()
+        .filter(cartItem -> cartItem.getIdproduct().equals(idproduct))
+        .findAny()
+        .map(cartItem -> { return cartItem; })
+        .orElseGet(() -> { return null; });
+  }
+
+  public boolean deleteProduct(Long idproduct) {
+    return cartItemList
+        .removeIf(cartItem -> cartItem.getIdproduct().equals(idproduct));
   }
 
   @Override
@@ -50,12 +80,12 @@ public class Cart {
     }
     Cart cart = (Cart) o;
     return checkedOut == cart.checkedOut &&
-        Objects.equals(id, cart.id) &&
+        Objects.equals(idcart, cart.idcart) &&
         Objects.equals(cartItemList, cart.cartItemList);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, cartItemList, checkedOut);
+    return Objects.hash(idcart, cartItemList, checkedOut);
   }
 }

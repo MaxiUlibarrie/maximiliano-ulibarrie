@@ -11,7 +11,10 @@ import javax.persistence.ManyToOne;
 public class LineSale {
 
   @Id @GeneratedValue
-  private Long id;
+  private Long idLineSale;
+
+  @Column
+  private Long idsale;
 
   @ManyToOne
   private Product product;
@@ -19,15 +22,24 @@ public class LineSale {
   @Column
   private Integer quantity;
 
-  public LineSale(Product product, Integer quantity) {
+  @Column
+  private double subTotalPrice;
+
+  public LineSale(Long idsale, Product product, Integer quantity) {
+    this.idsale = idsale;
     this.product = product;
     this.quantity = quantity;
+    this.subTotalPrice = product.getPrice() * quantity;
   }
 
-  public LineSale() {}
+  protected LineSale() {}
 
-  public Long getId() {
-    return id;
+  public Long getIdLineSale() {
+    return idLineSale;
+  }
+
+  public Long getIdsale() {
+    return idsale;
   }
 
   public Product getProduct() {
@@ -36,6 +48,10 @@ public class LineSale {
 
   public Integer getQuantity() {
     return quantity;
+  }
+
+  public double getSubTotalPrice() {
+    return subTotalPrice;
   }
 
   @Override
@@ -47,13 +63,13 @@ public class LineSale {
       return false;
     }
     LineSale lineSale = (LineSale) o;
-    return Objects.equals(id, lineSale.id) &&
+    return Objects.equals(idLineSale, lineSale.idLineSale) &&
         Objects.equals(product, lineSale.product) &&
         Objects.equals(quantity, lineSale.quantity);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, product, quantity);
+    return Objects.hash(idLineSale, product, quantity);
   }
 }

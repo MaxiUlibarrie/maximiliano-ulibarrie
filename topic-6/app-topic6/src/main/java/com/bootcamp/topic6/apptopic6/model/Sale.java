@@ -1,8 +1,10 @@
 package com.bootcamp.topic6.apptopic6.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,23 +15,26 @@ import javax.persistence.OneToMany;
 public class Sale {
 
   @Id @GeneratedValue
-  private Long id;
+  private Long idSale;
 
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   private List<LineSale> lineSaleList;
 
   @Column
   private LocalDateTime dateTime;
 
-  public Sale(List<LineSale> lineSaleList, LocalDateTime dateTime) {
-    this.lineSaleList = lineSaleList;
+  @Column
+  private double totalPrice;
+
+  public Sale(LocalDateTime dateTime) {
+    this.lineSaleList = new ArrayList<>();
     this.dateTime = dateTime;
   }
 
-  public Sale() {}
+  protected Sale() {}
 
-  public Long getId() {
-    return id;
+  public Long getIdSale() {
+    return idSale;
   }
 
   public List<LineSale> getLineSaleList() {
@@ -38,6 +43,18 @@ public class Sale {
 
   public LocalDateTime getDateTime() {
     return dateTime;
+  }
+
+  public double getTotalPrice() {
+    return totalPrice;
+  }
+
+  public void calculateTotalPrice() {
+    double totalPrice = 0;
+    for (LineSale lineSale : lineSaleList) {
+      totalPrice += lineSale.getSubTotalPrice();
+    }
+    this.totalPrice = totalPrice;
   }
 
   @Override
@@ -49,13 +66,13 @@ public class Sale {
       return false;
     }
     Sale sale = (Sale) o;
-    return Objects.equals(id, sale.id) &&
+    return Objects.equals(idSale, sale.idSale) &&
         Objects.equals(lineSaleList, sale.lineSaleList) &&
         Objects.equals(dateTime, sale.dateTime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, lineSaleList, dateTime);
+    return Objects.hash(idSale, lineSaleList, dateTime);
   }
 }
