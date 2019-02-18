@@ -87,6 +87,10 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
     CartItem cartItem = cart.getCartItemByIdProduct(idproduct);
     cartItem.decrementQuantity(quantity);
 
+    if (cartItem.getQuantity() == 0) {
+      deleteProduct(idcart,idproduct);
+    }
+
     cartRepo.save(cart);
 
     return true;

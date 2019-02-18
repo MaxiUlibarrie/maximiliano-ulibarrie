@@ -7,25 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/cart")
 public class CartController {
 
   @Autowired
   private CartService cartService;
 
-  @GetMapping("/carts")
+  @GetMapping("")
   public List<Cart> getAllCarts() {
     return cartService.getAllCarts();
   }
 
-  @DeleteMapping("/deletecart/{idcart}")
+  @DeleteMapping("/{idcart}")
   public void deleteCartById(@PathVariable Long idcart) {
     cartService.deleteCartById(idcart);
   }
 
-  @GetMapping("/carts/{idcart}")
+  @GetMapping("/{idcart}")
   public Cart getCartById(@PathVariable Long idcart) {
     return cartService.getCartById(idcart);
   }

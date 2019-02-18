@@ -10,16 +10,19 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/shoppingcart")
 public class ShoppingCartController {
 
   @Autowired
   private ShoppingCartService shoppingCartService;
 
-  @PostMapping("/newcart/{iduser}")
+  @PostMapping("/cart/{iduser}")
   public HttpStatus createCart(@PathVariable Long iduser) {
     boolean success = shoppingCartService.createCart(iduser);
 
@@ -30,12 +33,12 @@ public class ShoppingCartController {
     }
   }
 
-  @GetMapping("/cartitems/{idcart}")
+  @GetMapping("/cart/{idcart}")
   public List<CartItem> getAllCartItems(@PathVariable Long idcart) {
     return shoppingCartService.getAllCartItems(idcart);
   }
 
-  @PostMapping("/addproduct/{idcart}")
+  @PostMapping("/product/{idcart}")
   public HttpStatus addToCart(@PathVariable Long idcart,
                               @RequestParam Long idproduct,
                               @RequestParam Integer quantity) {
@@ -49,7 +52,7 @@ public class ShoppingCartController {
     }
   }
 
-  @DeleteMapping("/removeproduct/{idcart}")
+  @PutMapping("/product/{idcart}")
   public HttpStatus removeProduct(@PathVariable Long idcart,
                                   @RequestParam Long idproduct,
                                   @RequestParam Integer quantity) {
@@ -63,7 +66,7 @@ public class ShoppingCartController {
     }
   }
 
-  @DeleteMapping("/deleteproduct/{idcart}")
+  @DeleteMapping("/product/{idcart}")
   public HttpStatus deleteProductFromCart(@PathVariable Long idcart,
                                           @RequestParam Long idproduct) {
     boolean success = shoppingCartService.deleteProduct(idcart,idproduct);
@@ -75,7 +78,7 @@ public class ShoppingCartController {
     }
   }
 
-  @DeleteMapping("/clearcart/{idcart}")
+  @DeleteMapping("/clear/{idcart}")
   public HttpStatus clearCart(@PathVariable Long idcart) {
     boolean success = shoppingCartService.clearCart(idcart);
 
