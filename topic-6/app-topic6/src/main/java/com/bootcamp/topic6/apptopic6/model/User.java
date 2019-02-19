@@ -67,6 +67,10 @@ public class User {
     this.email = email;
   }
 
+  public Cart lastCart() {
+    return cartList.get(cartList.size() - 1);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

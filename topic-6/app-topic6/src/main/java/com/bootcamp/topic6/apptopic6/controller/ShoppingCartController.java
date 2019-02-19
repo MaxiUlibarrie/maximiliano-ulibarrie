@@ -1,5 +1,6 @@
 package com.bootcamp.topic6.apptopic6.controller;
 
+import com.bootcamp.topic6.apptopic6.model.Cart;
 import com.bootcamp.topic6.apptopic6.model.CartItem;
 import com.bootcamp.topic6.apptopic6.model.Sale;
 import com.bootcamp.topic6.apptopic6.service.ShoppingCartService;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/shoppingcart")
@@ -22,76 +25,89 @@ public class ShoppingCartController {
   @Autowired
   private ShoppingCartService shoppingCartService;
 
-  @PostMapping("/cart/{iduser}")
-  public HttpStatus createCart(@PathVariable Long iduser) {
-    boolean success = shoppingCartService.createCart(iduser);
-
-    if (success) {
-      return HttpStatus.CREATED;
-    } else {
-      return HttpStatus.NOT_FOUND;
+  @PostMapping("/newcart/{iduser}")
+  @ResponseStatus(HttpStatus.CREATED)
+  public Cart createCart(@PathVariable Long iduser) {
+    try {
+      return shoppingCartService.createCart(iduser);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
     }
   }
 
-  @GetMapping("/cart/{idcart}")
+  @DeleteMapping("/deletecart/{idcart}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteCart(@PathVariable Long idcart) {
+    try {
+      shoppingCartService.deleteCart(idcart);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
+    }
+  }
+
+  @GetMapping("/showcart/{idcart}")
+  @ResponseStatus(HttpStatus.OK)
   public List<CartItem> getAllCartItems(@PathVariable Long idcart) {
-    return shoppingCartService.getAllCartItems(idcart);
-  }
-
-  @PostMapping("/product/{idcart}")
-  public HttpStatus addToCart(@PathVariable Long idcart,
-                              @RequestParam Long idproduct,
-                              @RequestParam Integer quantity) {
-
-    boolean success = shoppingCartService.addToCart(idcart,idproduct,quantity);
-
-    if (success) {
-      return HttpStatus.CREATED;
-    } else {
-      return HttpStatus.NOT_FOUND;
+    try {
+      return shoppingCartService.getAllCartItems(idcart);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
     }
   }
 
-  @PutMapping("/product/{idcart}")
-  public HttpStatus removeProduct(@PathVariable Long idcart,
-                                  @RequestParam Long idproduct,
-                                  @RequestParam Integer quantity) {
-
-    boolean success = shoppingCartService.removeProduct(idcart,idproduct,quantity);
-
-    if (success) {
-      return HttpStatus.NO_CONTENT;
-    } else {
-      return HttpStatus.NOT_FOUND;
+  @PutMapping("/addproduct/{idcart}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void addToCart(@PathVariable Long idcart,
+                        @RequestParam Long idproduct,
+                        @RequestParam Integer quantity) {
+    try {
+      shoppingCartService.addToCart(idcart,idproduct,quantity);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
     }
   }
 
-  @DeleteMapping("/product/{idcart}")
-  public HttpStatus deleteProductFromCart(@PathVariable Long idcart,
-                                          @RequestParam Long idproduct) {
-    boolean success = shoppingCartService.deleteProduct(idcart,idproduct);
+  @PutMapping("/removeproduct/{idcart}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void removeProduct(@PathVariable Long idcart,
+                            @RequestParam Long idproduct,
+                            @RequestParam Integer quantity) {
+    try {
+      shoppingCartService.removeProduct(idcart,idproduct,quantity);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
+    }
+  }
 
-    if (success) {
-      return HttpStatus.NO_CONTENT;
-    } else {
-      return HttpStatus.NOT_FOUND;
+  @DeleteMapping("/deleteproduct/{idcart}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteProductFromCart(@PathVariable Long idcart,
+                                    @RequestParam Long idproduct) {
+    try {
+      shoppingCartService.deleteProduct(idcart,idproduct);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
     }
   }
 
   @DeleteMapping("/clear/{idcart}")
-  public HttpStatus clearCart(@PathVariable Long idcart) {
-    boolean success = shoppingCartService.clearCart(idcart);
-
-    if (success) {
-      return HttpStatus.NO_CONTENT;
-    } else {
-      return HttpStatus.NOT_FOUND;
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void clearCart(@PathVariable Long idcart) {
+    try {
+      shoppingCartService.clearCart(idcart);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
     }
   }
 
   @GetMapping("/checkout/{idcart}")
+  @ResponseStatus(HttpStatus.CREATED)
   public Sale doCheckOut(@PathVariable Long idcart) {
-    return shoppingCartService.doCheckOut(idcart);
+    try {
+      return shoppingCartService.doCheckOut(idcart);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
+    }
   }
 
 }

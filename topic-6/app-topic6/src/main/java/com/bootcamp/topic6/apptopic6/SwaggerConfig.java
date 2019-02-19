@@ -20,6 +20,3 @@ public class SwaggerConfig {
         .build();
   }
 }
-
-// to access api doc in json form: http://localhost:8080/v2/api-docs
-// to access api doc in ui form: http://localhost:8080/swagger-ui.html

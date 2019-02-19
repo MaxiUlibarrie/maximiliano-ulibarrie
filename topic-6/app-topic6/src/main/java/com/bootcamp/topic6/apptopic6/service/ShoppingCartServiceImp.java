@@ -1,5 +1,7 @@
 package com.bootcamp.topic6.apptopic6.service;
 
+import com.bootcamp.topic6.apptopic6.exception.NotFoundException;
+import com.bootcamp.topic6.apptopic6.exception.NotFoundProductInCart;
 import com.bootcamp.topic6.apptopic6.model.Cart;
 import com.bootcamp.topic6.apptopic6.model.CartItem;
 import com.bootcamp.topic6.apptopic6.model.LineSale;
@@ -8,7 +10,6 @@ import com.bootcamp.topic6.apptopic6.model.Sale;
 import com.bootcamp.topic6.apptopic6.model.User;
 import com.bootcamp.topic6.apptopic6.repository.CartItemRepository;
 import com.bootcamp.topic6.apptopic6.repository.CartRepository;
-import com.bootcamp.topic6.apptopic6.repository.LineSaleRepository;
 import com.bootcamp.topic6.apptopic6.repository.ProductRepository;
 import com.bootcamp.topic6.apptopic6.repository.SaleRepository;
 import com.bootcamp.topic6.apptopic6.repository.UserRepository;
@@ -19,6 +20,11 @@ import org.springframework.stereotype.Service;
 
 @Service("shoppingCartService")
 public class ShoppingCartServiceImp implements ShoppingCartService {
+
+  private final String PRODUCT_NAME = "Product";
+  private final String CART_NAME = "Cart";
+  private final String USER_NAME = "User";
+
 
   @Autowired
   private UserRepository userRepo;
@@ -35,54 +41,56 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
   @Autowired
   private SaleRepository saleRepo;
 
-  @Autowired
-  private LineSaleRepository lineSaleRepo;
-
   @Override
-  public boolean createCart(Long iduser) {
-    if (!userRepo.findById(iduser).isPresent()) return false;
+  public Cart createCart(Long iduser) {
+    if (!userRepo.existsById(iduser)) throw new NotFoundException(USER_NAME,iduser);
 
     User user = userRepo.findById(iduser).get();
     Cart newCart = new Cart(user);
     user.getCartList().add(newCart);
     userRepo.save(user);
 
-    return true;
+    return user.lastCart();
+  }
+
+  @Override
+  public void deleteCart(Long idcart) {
+    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
+
+    cartRepo.deleteById(idcart);
   }
 
   @Override
   public List<CartItem> getAllCartItems(Long idcart) {
+    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
+
     return cartRepo.findById(idcart).get().getCartItemList();
   }
 
   @Override
-  public boolean addToCart(Long idcart, Long idproduct, Integer quantity) {
-    if (!cartRepo.findById(idcart).isPresent()) return false;
-    if (!productRepo.findById(idproduct).isPresent()) return false;
+  public void addToCart(Long idcart, Long idproduct, Integer quantity) {
+    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
+    if (!productRepo.existsById(idproduct)) throw new NotFoundException(PRODUCT_NAME,idproduct);
 
     Cart cart = cartRepo.findById(idcart).get();
-    CartItem cartItem;
 
     if (cart.existsProduct(idproduct)) {
-      cartItem = cart.getCartItemByIdProduct(idproduct);
-      cartItem.incrementQuantity(quantity);
+      cart.getCartItemByIdProduct(idproduct).incrementQuantity(quantity);
     } else {
-      cartItem = new CartItem(idcart,idproduct,quantity);
+      CartItem cartItem = new CartItem(idcart,idproduct,quantity);
       cart.getCartItemList().add(cartItem);
     }
     cartRepo.save(cart);
-
-    return true;
   }
 
   @Override
-  public boolean removeProduct(Long idcart, Long idproduct, Integer quantity) {
-    if (!cartRepo.findById(idcart).isPresent()) return false;
-    if (!productRepo.findById(idproduct).isPresent()) return false;
+  public void removeProduct(Long idcart, Long idproduct, Integer quantity) {
+    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
+    if (!productRepo.existsById(idproduct)) throw new NotFoundException(PRODUCT_NAME,idproduct);
 
     Cart cart = cartRepo.findById(idcart).get();
 
-    if (!cart.existsProduct(idproduct)) return false;
+    if (!cart.existsProduct(idproduct)) throw new NotFoundProductInCart(idproduct);
 
     CartItem cartItem = cart.getCartItemByIdProduct(idproduct);
     cartItem.decrementQuantity(quantity);
@@ -92,41 +100,35 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
     }
 
     cartRepo.save(cart);
-
-    return true;
   }
 
   @Override
-  public boolean deleteProduct(Long idcart, Long idproduct) {
-    if (!cartRepo.findById(idcart).isPresent()) return false;
-    if (!productRepo.findById(idproduct).isPresent()) return false;
+  public void deleteProduct(Long idcart, Long idproduct) {
+    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
+    if (!productRepo.existsById(idproduct)) throw new NotFoundException(PRODUCT_NAME,idproduct);
 
     Cart cart = cartRepo.findById(idcart).get();
 
-    if (!cart.existsProduct(idproduct)) return false;
+    if (!cart.existsProduct(idproduct)) throw new NotFoundProductInCart(idproduct);
 
     Long idCartItem = cart.getCartItemByIdProduct(idproduct).getIdcartitem();
     cart.deleteProduct(idproduct);
     cartItemRepo.deleteById(idCartItem);
-
-    return true;
   }
 
   @Override
-  public boolean clearCart(Long idcart) {
-    if (!cartRepo.findById(idcart).isPresent()) return false;
+  public void clearCart(Long idcart) {
+    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
 
     Cart cart = cartRepo.findById(idcart).get();
     cart.getCartItemList().clear();
     cartRepo.save(cart);
     cartItemRepo.deleteByIdcart(idcart);
-
-    return true;
   }
 
   @Override
   public Sale doCheckOut(Long idcart) {
-    if (!cartRepo.findById(idcart).isPresent()) return null;
+    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
 
     Sale sale = new Sale(LocalDateTime.now());
     saleRepo.save(sale);

@@ -61,8 +61,7 @@ public class Cart {
     return cartItemList.stream()
         .filter(cartItem -> cartItem.getIdproduct().equals(idproduct))
         .findAny()
-        .map(cartItem -> { return cartItem; })
-        .orElseGet(() -> { return null; });
+        .orElse(null);
   }
 
   public boolean deleteProduct(Long idproduct) {
