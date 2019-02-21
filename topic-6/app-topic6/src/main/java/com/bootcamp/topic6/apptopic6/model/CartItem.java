@@ -1,36 +1,36 @@
 package com.bootcamp.topic6.apptopic6.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
+@JsonPropertyOrder(value = {"idcartitem","idproduct","quantity"})
 public class CartItem {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long idcartitem;
 
-  @Column
-  private Long idcart;
-
-  @Column
-  private Long idproduct;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "idproduct")
+  private Product product;
 
   @Column
   private int quantity;
 
   public CartItem() {}
 
-  public CartItem(Long idcart, Long idproduct, int quantity) {
-    this.idcart = idcart;
-    this.idproduct = idproduct;
+  public CartItem(Product product, int quantity) {
+    this.product = product;
     this.quantity = quantity;
   }
 
@@ -38,12 +38,13 @@ public class CartItem {
     return idcartitem;
   }
 
-  public Long getIdcart() {
-    return idcart;
+  @JsonIgnore
+  public Product getProduct() {
+    return product;
   }
 
   public Long getIdproduct() {
-    return idproduct;
+    return product.getIdproduct();
   }
 
   public int getQuantity() {
@@ -73,12 +74,11 @@ public class CartItem {
     CartItem cartItem = (CartItem) o;
     return quantity == cartItem.quantity &&
         Objects.equals(idcartitem, cartItem.idcartitem) &&
-        Objects.equals(idcart, cartItem.idcart) &&
-        Objects.equals(idproduct, cartItem.idproduct);
+        Objects.equals(product, cartItem.product);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idcartitem, idcart, idproduct, quantity);
+    return Objects.hash(idcartitem, product, quantity);
   }
 }

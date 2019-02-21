@@ -1,6 +1,8 @@
 package com.bootcamp.topic6.apptopic6.model;
 
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,42 +10,38 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 
 @Entity
-public class Product {
+public class Role {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long idproduct;
+  private Long idrole;
+
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "iduser")
+  private List<User> userList;
 
   @Column(length = 30)
   private String name;
 
-  @Column
-  private double price;
+  public Role() {}
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "idcategory")
-  private Category category;
-
-  public Product(String name, double price) {
+  public Role(String name) {
     this.name = name;
-    this.price = price;
   }
 
-  public Product() {}
+  public Long getIdrole() {
+    return idrole;
+  }
 
-  public Long getIdproduct() {
-    return idproduct;
+  public List<User> getUserList() {
+    return userList;
   }
 
   public String getName() {
     return name;
-  }
-
-  public double getPrice() {
-    return price;
   }
 
   @Override
@@ -54,14 +52,14 @@ public class Product {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Product product = (Product) o;
-    return Double.compare(product.price, price) == 0 &&
-        Objects.equals(idproduct, product.idproduct) &&
-        Objects.equals(name, product.name);
+    Role role = (Role) o;
+    return Objects.equals(idrole, role.idrole) &&
+        Objects.equals(userList, role.userList) &&
+        Objects.equals(name, role.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idproduct, name, price);
+    return Objects.hash(idrole, userList, name);
   }
 }

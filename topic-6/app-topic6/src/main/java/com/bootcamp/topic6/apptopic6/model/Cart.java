@@ -1,40 +1,45 @@
 package com.bootcamp.topic6.apptopic6.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
+@JsonPropertyOrder(value = {"idcart","checkedOut","cartItemList"})
 public class Cart {
 
-  @Id @GeneratedValue
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long idcart;
 
   @OneToMany(cascade = CascadeType.ALL)
   private List<CartItem> cartItemList;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "iduser")
   private User user;
 
   @Column
   private boolean checkedOut;
 
+  public Cart() {}
+
   public Cart(User user) {
     this.user = user;
     this.cartItemList = new ArrayList<>();
     this.checkedOut = false;
   }
-
-  public Cart() {}
 
   public Long getIdcart() {
     return idcart;
@@ -54,19 +59,19 @@ public class Cart {
 
   public boolean existsProduct(Long idproduct) {
     return cartItemList.stream()
-        .anyMatch(cartItem -> cartItem.getIdproduct().equals(idproduct));
+        .anyMatch(cartItem -> cartItem.getProduct().getIdproduct().equals(idproduct));
   }
 
-  public CartItem getCartItemByIdProduct(Long idproduct) {
+  public CartItem getOneCartItem(Long idproduct) {
     return cartItemList.stream()
-        .filter(cartItem -> cartItem.getIdproduct().equals(idproduct))
+        .filter(cartItem -> cartItem.getProduct().getIdproduct().equals(idproduct))
         .findAny()
         .orElse(null);
   }
 
   public boolean deleteProduct(Long idproduct) {
     return cartItemList
-        .removeIf(cartItem -> cartItem.getIdproduct().equals(idproduct));
+        .removeIf(cartItem -> cartItem.getProduct().getIdproduct().equals(idproduct));
   }
 
   @Override
@@ -80,11 +85,12 @@ public class Cart {
     Cart cart = (Cart) o;
     return checkedOut == cart.checkedOut &&
         Objects.equals(idcart, cart.idcart) &&
-        Objects.equals(cartItemList, cart.cartItemList);
+        Objects.equals(cartItemList, cart.cartItemList) &&
+        Objects.equals(user, cart.user);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idcart, cartItemList, checkedOut);
+    return Objects.hash(idcart, cartItemList, user, checkedOut);
   }
 }

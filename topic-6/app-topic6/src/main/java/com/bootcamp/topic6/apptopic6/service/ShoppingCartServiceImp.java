@@ -1,5 +1,6 @@
 package com.bootcamp.topic6.apptopic6.service;
 
+import com.bootcamp.topic6.apptopic6.exception.CartCheckedOutException;
 import com.bootcamp.topic6.apptopic6.exception.NotFoundException;
 import com.bootcamp.topic6.apptopic6.exception.NotFoundProductInCart;
 import com.bootcamp.topic6.apptopic6.model.Cart;
@@ -14,6 +15,7 @@ import com.bootcamp.topic6.apptopic6.repository.ProductRepository;
 import com.bootcamp.topic6.apptopic6.repository.SaleRepository;
 import com.bootcamp.topic6.apptopic6.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,11 +75,12 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
     if (!productRepo.existsById(idproduct)) throw new NotFoundException(PRODUCT_NAME,idproduct);
 
     Cart cart = cartRepo.findById(idcart).get();
+    Product product = productRepo.findById(idproduct).get();
 
     if (cart.existsProduct(idproduct)) {
-      cart.getCartItemByIdProduct(idproduct).incrementQuantity(quantity);
+      cart.getOneCartItem(idproduct).incrementQuantity(quantity);
     } else {
-      CartItem cartItem = new CartItem(idcart,idproduct,quantity);
+      CartItem cartItem = new CartItem(product,quantity);
       cart.getCartItemList().add(cartItem);
     }
     cartRepo.save(cart);
@@ -92,7 +95,7 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
 
     if (!cart.existsProduct(idproduct)) throw new NotFoundProductInCart(idproduct);
 
-    CartItem cartItem = cart.getCartItemByIdProduct(idproduct);
+    CartItem cartItem = cart.getOneCartItem(idproduct);
     cartItem.decrementQuantity(quantity);
 
     if (cartItem.getQuantity() == 0) {
@@ -111,7 +114,7 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
 
     if (!cart.existsProduct(idproduct)) throw new NotFoundProductInCart(idproduct);
 
-    Long idCartItem = cart.getCartItemByIdProduct(idproduct).getIdcartitem();
+    Long idCartItem = cart.getOneCartItem(idproduct).getIdcartitem();
     cart.deleteProduct(idproduct);
     cartItemRepo.deleteById(idCartItem);
   }
@@ -121,22 +124,22 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
     if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
 
     Cart cart = cartRepo.findById(idcart).get();
+    List<Long> idCartItems = new ArrayList<>();
+    cart.getCartItemList().forEach(cartItem -> { idCartItems.add(cartItem.getIdcartitem()); });
     cart.getCartItemList().clear();
-    cartRepo.save(cart);
-    cartItemRepo.deleteByIdcart(idcart);
+    idCartItems.forEach(cartItemRepo::deleteById);
   }
 
   @Override
   public Sale doCheckOut(Long idcart) {
     if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
 
-    Sale sale = new Sale(LocalDateTime.now());
-    saleRepo.save(sale);
     Cart cart = cartRepo.findById(idcart).get();
+    if (cart.isCheckedOut()) throw new CartCheckedOutException(idcart);
 
+    Sale sale = new Sale(LocalDateTime.now());
     for (CartItem cartItem : cart.getCartItemList()) {
-      Product product = productRepo.findById(cartItem.getIdproduct()).get();
-      LineSale lineSale = new LineSale(sale.getIdSale(),product,cartItem.getQuantity());
+      LineSale lineSale = new LineSale(sale,cartItem.getProduct(),cartItem.getQuantity());
       sale.getLineSaleList().add(lineSale);
     }
     sale.calculateTotalPrice();

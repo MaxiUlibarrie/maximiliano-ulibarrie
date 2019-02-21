@@ -8,16 +8,18 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
 public class Sale {
 
-  @Id @GeneratedValue
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long idSale;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
   private List<LineSale> lineSaleList;
 
   @Column
@@ -28,6 +30,7 @@ public class Sale {
 
   public Sale(LocalDateTime dateTime) {
     this.lineSaleList = new ArrayList<>();
+    this.totalPrice = 0;
     this.dateTime = dateTime;
   }
 
@@ -50,11 +53,9 @@ public class Sale {
   }
 
   public void calculateTotalPrice() {
-    double totalPrice = 0;
-    for (LineSale lineSale : lineSaleList) {
-      totalPrice += lineSale.getSubTotalPrice();
-    }
-    this.totalPrice = totalPrice;
+    totalPrice = lineSaleList.stream()
+        .mapToDouble(LineSale::getSubTotalPrice)
+        .sum();
   }
 
   @Override

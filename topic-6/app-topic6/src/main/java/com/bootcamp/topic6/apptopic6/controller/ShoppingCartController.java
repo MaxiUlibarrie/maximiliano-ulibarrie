@@ -100,13 +100,13 @@ public class ShoppingCartController {
     }
   }
 
-  @GetMapping("/checkout/{idcart}")
+  @PostMapping("/checkout/{idcart}")
   @ResponseStatus(HttpStatus.CREATED)
   public Sale doCheckOut(@PathVariable Long idcart) {
     try {
       return shoppingCartService.doCheckOut(idcart);
     } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
+      throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
     }
   }
 
