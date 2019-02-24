@@ -1,7 +1,9 @@
 package com.bootcamp.shoppingcart.appshoppingcart.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-@JsonPropertyOrder(value = {"idcartitem","idproduct","quantity"})
+@JsonPropertyOrder(value = {"idcartitem","cart","product","quantity"})
 public class CartItem {
 
   @Id
@@ -27,9 +29,14 @@ public class CartItem {
   @Column
   private int quantity;
 
-  public CartItem() {}
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "idcart")
+  private Cart cart;
 
-  public CartItem(Product product, int quantity) {
+  protected CartItem() {}
+
+  public CartItem(Cart cart, Product product, int quantity) {
+    this.cart = cart;
     this.product = product;
     this.quantity = quantity;
   }
@@ -38,17 +45,20 @@ public class CartItem {
     return idcartitem;
   }
 
-  @JsonIgnore
+  @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="idproduct")
+  @JsonIdentityReference(alwaysAsId=true)
   public Product getProduct() {
     return product;
   }
 
-  public Long getIdproduct() {
-    return product.getIdproduct();
-  }
-
   public int getQuantity() {
     return quantity;
+  }
+
+  @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="idcart")
+  @JsonIdentityReference(alwaysAsId=true)
+  public Cart getCart() {
+    return cart;
   }
 
   public void incrementQuantity(int increase) {

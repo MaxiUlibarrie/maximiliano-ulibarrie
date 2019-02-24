@@ -6,11 +6,10 @@ import java.util.List;
 public interface UserService {
 
   List<User> getAllUsers();
-  User createUser(String username, String password, String email);
+  User createUser(User user);
   User getUserById(Long iduser);
-  void updateUsernameById(Long iduser, String newUsername);
-  void updateUserPasswordById(Long iduser, String newPassword);
-  void updateUserEmailById(Long iduser, String newEmail);
+  User getUserByUsername(String username);
+  void grantRoleToUser(Long iduser, Long idrole);
+  void updateUser(Long iduser, User user);
   void deleteUserById(Long iduser);
-
 }

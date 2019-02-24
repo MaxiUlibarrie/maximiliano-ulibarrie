@@ -15,7 +15,6 @@ import com.bootcamp.shoppingcart.appshoppingcart.repository.ProductRepository;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.SaleRepository;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.UserRepository;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,10 +43,10 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
   private SaleRepository saleRepo;
 
   @Override
-  public Cart createCart(Long iduser) {
-    if (!userRepo.existsById(iduser)) throw new NotFoundException(USER_NAME,iduser);
+  public Cart createCart(String username) {
+    if (!userRepo.existsByUsername(username)) throw new RuntimeException("Username not found.");
 
-    User user = userRepo.findById(iduser).get();
+    User user = userRepo.findByUsername(username).get();
     Cart newCart = new Cart(user);
     user.getCartList().add(newCart);
     userRepo.save(user);
@@ -80,7 +79,7 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
     if (cart.existsProduct(idproduct)) {
       cart.getOneCartItem(idproduct).incrementQuantity(quantity);
     } else {
-      CartItem cartItem = new CartItem(product,quantity);
+      CartItem cartItem = new CartItem(cart,product,quantity);
       cart.getCartItemList().add(cartItem);
     }
     cartRepo.save(cart);
@@ -97,10 +96,6 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
 
     CartItem cartItem = cart.getOneCartItem(idproduct);
     cartItem.decrementQuantity(quantity);
-
-    if (cartItem.getQuantity() == 0) {
-      deleteProduct(idcart,idproduct);
-    }
 
     cartRepo.save(cart);
   }
@@ -124,10 +119,8 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
     if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
 
     Cart cart = cartRepo.findById(idcart).get();
-    List<Long> idCartItems = new ArrayList<>();
-    cart.getCartItemList().forEach(cartItem -> { idCartItems.add(cartItem.getIdcartitem()); });
     cart.getCartItemList().clear();
-    idCartItems.forEach(cartItemRepo::deleteById);
+    cartItemRepo.deleteByCart(cart);
   }
 
   @Override
@@ -137,7 +130,7 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
     Cart cart = cartRepo.findById(idcart).get();
     if (cart.isCheckedOut()) throw new CartCheckedOutException(idcart);
 
-    Sale sale = new Sale(LocalDateTime.now());
+    Sale sale = new Sale(cart.getUser(), LocalDateTime.now());
     for (CartItem cartItem : cart.getCartItemList()) {
       LineSale lineSale = new LineSale(sale,cartItem.getProduct(),cartItem.getQuantity());
       sale.getLineSaleList().add(lineSale);

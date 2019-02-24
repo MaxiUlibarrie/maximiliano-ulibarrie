@@ -1,6 +1,9 @@
 package com.bootcamp.shoppingcart.appshoppingcart.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,14 +19,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-@JsonPropertyOrder(value = {"idcart","checkedOut","cartItemList"})
+@JsonPropertyOrder(value = {"idcart","user","checkedOut","cartItemList"})
 public class Cart {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long idcart;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
   private List<CartItem> cartItemList;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +36,7 @@ public class Cart {
   @Column
   private boolean checkedOut;
 
-  public Cart() {}
+  protected Cart() {}
 
   public Cart(User user) {
     this.user = user;
@@ -51,6 +54,12 @@ public class Cart {
 
   public boolean isCheckedOut() {
     return checkedOut;
+  }
+
+  @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="iduser")
+  @JsonIdentityReference(alwaysAsId=true)
+  public User getUser() {
+    return user;
   }
 
   public void setCheckedOut(boolean checkedOut) {

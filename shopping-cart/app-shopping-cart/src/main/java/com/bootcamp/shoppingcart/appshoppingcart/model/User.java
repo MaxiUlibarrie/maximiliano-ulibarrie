@@ -1,5 +1,6 @@
 package com.bootcamp.shoppingcart.appshoppingcart.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -10,8 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 public class User {
@@ -29,8 +32,11 @@ public class User {
   @Column(length = 30, unique = true)
   private String email;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "idrole")
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinTable(name = "user_role",
+    joinColumns = @JoinColumn(name = "iduser"),
+    inverseJoinColumns = @JoinColumn(name = "idrole"),
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"iduser","idrole"})})
   private List<Role> roleList;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -42,6 +48,8 @@ public class User {
     this.username = username;
     this.password = password;
     this.email = email;
+    this.cartList = new ArrayList<>();
+    this.roleList = new ArrayList<>();
   }
 
   public Long getIduser() {
@@ -58,6 +66,10 @@ public class User {
 
   public String getEmail() {
     return email;
+  }
+
+  public List<Role> getRoleList() {
+    return roleList;
   }
 
   public List<Cart> getCartList() {
@@ -91,11 +103,14 @@ public class User {
     User user = (User) o;
     return Objects.equals(iduser, user.iduser) &&
         Objects.equals(username, user.username) &&
-        Objects.equals(password, user.password);
+        Objects.equals(password, user.password) &&
+        Objects.equals(email, user.email) &&
+        Objects.equals(roleList, user.roleList) &&
+        Objects.equals(cartList, user.cartList);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(iduser, username, password);
+    return Objects.hash(iduser, username, password, email, roleList, cartList);
   }
 }

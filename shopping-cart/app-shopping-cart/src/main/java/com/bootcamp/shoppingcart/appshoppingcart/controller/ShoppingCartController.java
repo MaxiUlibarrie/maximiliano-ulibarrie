@@ -7,6 +7,8 @@ import com.bootcamp.shoppingcart.appshoppingcart.service.ShoppingCartService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,24 +21,25 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/shoppingcart")
+@RequestMapping("/api/shoppingcart")
 public class ShoppingCartController {
 
   @Autowired
   private ShoppingCartService shoppingCartService;
 
-  @PostMapping("/newcart/{iduser}")
+  @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public Cart createCart(@PathVariable Long iduser) {
+  public Cart createCart(Authentication auth) {
     try {
-      return shoppingCartService.createCart(iduser);
+      return shoppingCartService.createCart(auth.getName());
     } catch (RuntimeException re) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
     }
   }
 
-  @DeleteMapping("/deletecart/{idcart}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @DeleteMapping("/{idcart}")
+  @PreAuthorize("hasPermission(#idcart,'Cart','delete')")
+  @ResponseStatus(HttpStatus.OK)
   public void deleteCart(@PathVariable Long idcart) {
     try {
       shoppingCartService.deleteCart(idcart);
@@ -45,7 +48,8 @@ public class ShoppingCartController {
     }
   }
 
-  @GetMapping("/showcart/{idcart}")
+  @GetMapping("/{idcart}")
+  @PreAuthorize("hasPermission(#idcart,'Cart','read')")
   @ResponseStatus(HttpStatus.OK)
   public List<CartItem> getAllCartItems(@PathVariable Long idcart) {
     try {
@@ -55,10 +59,11 @@ public class ShoppingCartController {
     }
   }
 
-  @PutMapping("/addproduct/{idcart}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PostMapping("/{idcart}/product/{idproduct}")
+  @PreAuthorize("hasPermission(#idcart,'Cart','create')")
+  @ResponseStatus(HttpStatus.OK)
   public void addToCart(@PathVariable Long idcart,
-                        @RequestParam Long idproduct,
+                        @PathVariable Long idproduct,
                         @RequestParam Integer quantity) {
     try {
       shoppingCartService.addToCart(idcart,idproduct,quantity);
@@ -67,10 +72,11 @@ public class ShoppingCartController {
     }
   }
 
-  @PutMapping("/removeproduct/{idcart}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PutMapping("/{idcart}/product/{idproduct}")
+  @PreAuthorize("hasPermission(#idcart,'Cart','update')")
+  @ResponseStatus(HttpStatus.OK)
   public void removeProduct(@PathVariable Long idcart,
-                            @RequestParam Long idproduct,
+                            @PathVariable Long idproduct,
                             @RequestParam Integer quantity) {
     try {
       shoppingCartService.removeProduct(idcart,idproduct,quantity);
@@ -79,10 +85,11 @@ public class ShoppingCartController {
     }
   }
 
-  @DeleteMapping("/deleteproduct/{idcart}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @DeleteMapping("/{idcart}/product/{idproduct}")
+  @PreAuthorize("hasPermission(#idcart,'Cart','delete')")
+  @ResponseStatus(HttpStatus.OK)
   public void deleteProductFromCart(@PathVariable Long idcart,
-                                    @RequestParam Long idproduct) {
+                                    @PathVariable Long idproduct) {
     try {
       shoppingCartService.deleteProduct(idcart,idproduct);
     } catch (RuntimeException re) {
@@ -91,7 +98,8 @@ public class ShoppingCartController {
   }
 
   @DeleteMapping("/clear/{idcart}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasPermission(#idcart,'Cart','delete')")
+  @ResponseStatus(HttpStatus.OK)
   public void clearCart(@PathVariable Long idcart) {
     try {
       shoppingCartService.clearCart(idcart);
@@ -101,6 +109,7 @@ public class ShoppingCartController {
   }
 
   @PostMapping("/checkout/{idcart}")
+  @PreAuthorize("hasPermission(#idcart,'Cart','create')")
   @ResponseStatus(HttpStatus.CREATED)
   public Sale doCheckOut(@PathVariable Long idcart) {
     try {

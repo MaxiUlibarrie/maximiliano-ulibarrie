@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ShoppingCartService {
 
-  Cart createCart(Long iduser);
+  Cart createCart(String username);
   void deleteCart(Long idcart);
   List<CartItem> getAllCartItems(Long idcart);
   void addToCart(Long idcart, Long idproduct, Integer quantity);
@@ -15,5 +15,4 @@ public interface ShoppingCartService {
   void deleteProduct(Long idcart, Long idproduct);
   void clearCart(Long idcart);
   Sale doCheckOut(Long idcart);
-
 }
