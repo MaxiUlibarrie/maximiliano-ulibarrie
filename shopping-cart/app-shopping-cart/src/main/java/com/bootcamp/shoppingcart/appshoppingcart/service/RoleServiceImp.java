@@ -34,7 +34,6 @@ public class RoleServiceImp implements RoleService {
   @Override
   public void deleteRole(Long idrole) {
     if (!roleRepo.existsById(idrole)) throw new NotFoundException(NAME_ROLE,idrole);
-
     roleRepo.deleteById(idrole);
   }
 }

@@ -54,13 +54,11 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
   @Override
   public void deleteCart(Long idcart) {
     if (!cartRepo.existsById(idcart)) throw new NotFoundException(NAME_CART,idcart);
-
     cartRepo.deleteById(idcart);
   }
 
   @Override
   public List<CartItem> getAllCartItems(Long idcart) {
-
     return getCartById(idcart).getCartItemList();
   }
 
@@ -102,10 +100,9 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
   @Override
   public Sale doCheckOut(Long idcart) {
     Cart cart = getCartById(idcart);
-
     if (cart.isCheckedOut()) throw new CartCheckedOutException(idcart);
-
     Sale sale = new Sale(cart.getUser(), LocalDateTime.now());
+
     for (CartItem cartItem : cart.getCartItemList()) {
       LineSale lineSale = new LineSale(sale,cartItem.getProduct(),cartItem.getQuantity());
       sale.getLineSaleList().add(lineSale);

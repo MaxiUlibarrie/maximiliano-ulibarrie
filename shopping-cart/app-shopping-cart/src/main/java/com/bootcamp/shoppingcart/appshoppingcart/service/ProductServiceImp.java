@@ -39,7 +39,6 @@ public class ProductServiceImp implements ProductService {
   @Override
   public List<Product> getProductsByCategory(Long idcategory) {
     Category category = categoryService.getCategoryById(idcategory);
-
     return productRepo.findByCategory(category);
   }
 
@@ -58,7 +57,6 @@ public class ProductServiceImp implements ProductService {
 
   @Override
   public void updatePriceProduct(Long idproduct, Double price) {
-
     productRepo.findById(idproduct)
         .map(updatedProduct -> {
           updatedProduct.setPrice(price);

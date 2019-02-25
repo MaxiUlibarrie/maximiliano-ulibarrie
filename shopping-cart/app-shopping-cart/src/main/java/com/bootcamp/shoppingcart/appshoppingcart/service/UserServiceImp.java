@@ -18,7 +18,7 @@ public class UserServiceImp implements UserService {
   private RoleService roleService;
 
   private final String NAME_USER = "User";
-  private final String MESSAGE_NOT_FOUND = "Could not found user.";
+  private final String MESSAGE_NOT_FOUND_USERNAME = "Could not find username.";
 
   @Override
   public List<User> getAllUsers() {
@@ -39,21 +39,19 @@ public class UserServiceImp implements UserService {
   @Override
   public User getUserByUsername(String username) {
     return userRepo.findByUsername(username)
-        .orElseThrow(() -> new NotFoundException(MESSAGE_NOT_FOUND));
+        .orElseThrow(() -> new NotFoundException(MESSAGE_NOT_FOUND_USERNAME));
   }
 
   @Override
   public void grantRoleToUser(Long iduser, Long idrole) {
     User user = getUserById(iduser);
     Role role = roleService.getRoleById(idrole);
-
     user.getRoleList().add(role);
     userRepo.save(user);
   }
 
   @Override
   public void updateUser(Long iduser, User user) {
-
     userRepo.findById(iduser)
         .map(updatedUser -> {
           updatedUser.setUsername(user.getUsername());
@@ -67,7 +65,6 @@ public class UserServiceImp implements UserService {
   @Override
   public void deleteUserById(Long iduser) {
     if (!userRepo.existsById(iduser)) throw new NotFoundException(NAME_USER,iduser);
-
     userRepo.deleteById(iduser);
   }
 }
