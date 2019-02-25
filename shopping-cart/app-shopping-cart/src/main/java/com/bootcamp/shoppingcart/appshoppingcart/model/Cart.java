@@ -72,15 +72,24 @@ public class Cart {
   }
 
   public CartItem getOneCartItem(Long idproduct) {
+    controlNotFoundProductInCart(idproduct);
+
     return cartItemList.stream()
         .filter(cartItem -> cartItem.getProduct().getIdproduct().equals(idproduct))
         .findAny()
-        .orElse(null);
+        .get();
   }
 
   public boolean deleteProduct(Long idproduct) {
+    controlNotFoundProductInCart(idproduct);
+
     return cartItemList
         .removeIf(cartItem -> cartItem.getProduct().getIdproduct().equals(idproduct));
+  }
+
+  private void controlNotFoundProductInCart(Long idproduct) {
+    if (!existsProduct(idproduct))
+      throw new RuntimeException(String.format("Product %d doesn't exist in the cart.",idproduct));
   }
 
   @Override

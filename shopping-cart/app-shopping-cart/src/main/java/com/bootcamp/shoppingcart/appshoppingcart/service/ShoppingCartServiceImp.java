@@ -2,7 +2,6 @@ package com.bootcamp.shoppingcart.appshoppingcart.service;
 
 import com.bootcamp.shoppingcart.appshoppingcart.exception.CartCheckedOutException;
 import com.bootcamp.shoppingcart.appshoppingcart.exception.NotFoundException;
-import com.bootcamp.shoppingcart.appshoppingcart.exception.NotFoundProductInCart;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Cart;
 import com.bootcamp.shoppingcart.appshoppingcart.model.CartItem;
 import com.bootcamp.shoppingcart.appshoppingcart.model.LineSale;
@@ -20,8 +19,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShoppingCartServiceImp implements ShoppingCartService {
 
-  private final String NAME_CART = "Cart";
-
   @Autowired
   private CartRepository cartRepo;
 
@@ -36,6 +33,8 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
 
   @Autowired
   private UserService userService;
+
+  private final String NAME_CART = "Cart";
 
   @Override
   public Cart createCart(String username) {
@@ -61,9 +60,8 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
 
   @Override
   public List<CartItem> getAllCartItems(Long idcart) {
-    if (!cartRepo.existsById(idcart)) throw new NotFoundException(NAME_CART,idcart);
 
-    return cartRepo.findById(idcart).get().getCartItemList();
+    return getCartById(idcart).getCartItemList();
   }
 
   @Override
@@ -74,8 +72,7 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
     if (cart.existsProduct(idproduct)) {
       cart.getOneCartItem(idproduct).incrementQuantity(quantity);
     } else {
-      CartItem cartItem = new CartItem(cart,product,quantity);
-      cart.getCartItemList().add(cartItem);
+      cart.getCartItemList().add(new CartItem(cart,product,quantity));
     }
     cartRepo.save(cart);
   }
@@ -83,21 +80,13 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
   @Override
   public void removeProduct(Long idcart, Long idproduct, Integer quantity) {
     Cart cart = getCartById(idcart);
-
-    if (!cart.existsProduct(idproduct)) throw new NotFoundProductInCart(idproduct);
-
-    CartItem cartItem = cart.getOneCartItem(idproduct);
-    cartItem.decrementQuantity(quantity);
-
+    cart.getOneCartItem(idproduct).decrementQuantity(quantity);
     cartRepo.save(cart);
   }
 
   @Override
   public void deleteProduct(Long idcart, Long idproduct) {
     Cart cart = getCartById(idcart);
-
-    if (!cart.existsProduct(idproduct)) throw new NotFoundProductInCart(idproduct);
-
     Long idCartItem = cart.getOneCartItem(idproduct).getIdcartitem();
     cart.deleteProduct(idproduct);
     cartItemRepo.deleteById(idCartItem);
