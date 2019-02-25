@@ -11,24 +11,16 @@ import com.bootcamp.shoppingcart.appshoppingcart.model.Sale;
 import com.bootcamp.shoppingcart.appshoppingcart.model.User;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.CartItemRepository;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.CartRepository;
-import com.bootcamp.shoppingcart.appshoppingcart.repository.ProductRepository;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.SaleRepository;
-import com.bootcamp.shoppingcart.appshoppingcart.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service("shoppingCartService")
+@Service
 public class ShoppingCartServiceImp implements ShoppingCartService {
 
-  private final String PRODUCT_NAME = "Product";
-  private final String CART_NAME = "Cart";
-  private final String USER_NAME = "User";
-
-
-  @Autowired
-  private UserRepository userRepo;
+  private final String NAME_CART = "Cart";
 
   @Autowired
   private CartRepository cartRepo;
@@ -37,44 +29,47 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
   private CartItemRepository cartItemRepo;
 
   @Autowired
-  private ProductRepository productRepo;
+  private SaleRepository saleRepo;
 
   @Autowired
-  private SaleRepository saleRepo;
+  private ProductService productService;
+
+  @Autowired
+  private UserService userService;
 
   @Override
   public Cart createCart(String username) {
-    if (!userRepo.existsByUsername(username)) throw new RuntimeException("Username not found.");
-
-    User user = userRepo.findByUsername(username).get();
+    User user = userService.getUserByUsername(username);
     Cart newCart = new Cart(user);
     user.getCartList().add(newCart);
-    userRepo.save(user);
 
-    return user.lastCart();
+    return cartRepo.save(newCart);
+  }
+
+  @Override
+  public Cart getCartById(Long idcart) {
+    return cartRepo.findById(idcart)
+        .orElseThrow(() -> new NotFoundException(NAME_CART,idcart));
   }
 
   @Override
   public void deleteCart(Long idcart) {
-    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
+    if (!cartRepo.existsById(idcart)) throw new NotFoundException(NAME_CART,idcart);
 
     cartRepo.deleteById(idcart);
   }
 
   @Override
   public List<CartItem> getAllCartItems(Long idcart) {
-    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
+    if (!cartRepo.existsById(idcart)) throw new NotFoundException(NAME_CART,idcart);
 
     return cartRepo.findById(idcart).get().getCartItemList();
   }
 
   @Override
   public void addToCart(Long idcart, Long idproduct, Integer quantity) {
-    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
-    if (!productRepo.existsById(idproduct)) throw new NotFoundException(PRODUCT_NAME,idproduct);
-
-    Cart cart = cartRepo.findById(idcart).get();
-    Product product = productRepo.findById(idproduct).get();
+    Cart cart = getCartById(idcart);
+    Product product = productService.getProductById(idproduct);
 
     if (cart.existsProduct(idproduct)) {
       cart.getOneCartItem(idproduct).incrementQuantity(quantity);
@@ -87,10 +82,7 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
 
   @Override
   public void removeProduct(Long idcart, Long idproduct, Integer quantity) {
-    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
-    if (!productRepo.existsById(idproduct)) throw new NotFoundException(PRODUCT_NAME,idproduct);
-
-    Cart cart = cartRepo.findById(idcart).get();
+    Cart cart = getCartById(idcart);
 
     if (!cart.existsProduct(idproduct)) throw new NotFoundProductInCart(idproduct);
 
@@ -102,10 +94,7 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
 
   @Override
   public void deleteProduct(Long idcart, Long idproduct) {
-    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
-    if (!productRepo.existsById(idproduct)) throw new NotFoundException(PRODUCT_NAME,idproduct);
-
-    Cart cart = cartRepo.findById(idcart).get();
+    Cart cart = getCartById(idcart);
 
     if (!cart.existsProduct(idproduct)) throw new NotFoundProductInCart(idproduct);
 
@@ -116,18 +105,15 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
 
   @Override
   public void clearCart(Long idcart) {
-    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
-
-    Cart cart = cartRepo.findById(idcart).get();
+    Cart cart = getCartById(idcart);
     cart.getCartItemList().clear();
     cartItemRepo.deleteByCart(cart);
   }
 
   @Override
   public Sale doCheckOut(Long idcart) {
-    if (!cartRepo.existsById(idcart)) throw new NotFoundException(CART_NAME,idcart);
+    Cart cart = getCartById(idcart);
 
-    Cart cart = cartRepo.findById(idcart).get();
     if (cart.isCheckedOut()) throw new CartCheckedOutException(idcart);
 
     Sale sale = new Sale(cart.getUser(), LocalDateTime.now());

@@ -11,6 +11,6 @@ public interface ProductService {
   List<Product> getProductsByCategory(Long idcategory);
   List<Product> getProductsByCategoryAndManufacturer(Long idcategory, String manufacturer);
   Product createProduct(Product product);
-  void updateProduct(Long idproduct, Product product);
+  void updatePriceProduct(Long idproduct, Double price);
   void deleteProduct(Long idproduct);
 }
