@@ -49,13 +49,13 @@ public class LineSale {
   }
 
   @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="idsale")
-  @JsonIdentityReference(alwaysAsId=true)
+  @JsonIdentityReference(alwaysAsId = true)
   public Sale getSale() {
     return sale;
   }
 
   @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="idproduct")
-  @JsonIdentityReference(alwaysAsId=true)
+  @JsonIdentityReference(alwaysAsId = true)
   public Product getProduct() {
     return product;
   }

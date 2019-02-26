@@ -30,10 +30,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     http.csrf().disable()
         .authorizeRequests()
+        .antMatchers("/v2/api-docs").permitAll()
+        .antMatchers("/swagger-ui.html").permitAll()
+        .antMatchers("/api/signup").permitAll()
         .antMatchers("/api/shoppingcart/**").authenticated()
-        .anyRequest().hasRole("CUSTOMER")
-        .antMatchers("/api/user/**").authenticated()
-        .anyRequest().hasRole("ADMIN")
+        .antMatchers("/api/user/**").hasRole("ADMIN")
+        .antMatchers("/api/role/**").hasRole("ADMIN")
+        .antMatchers("/api/product/**").hasRole("EMPLOYEE")
+        .antMatchers("/api/category/**").hasRole("EMPLOYEE")
         .and()
         .httpBasic();
   }

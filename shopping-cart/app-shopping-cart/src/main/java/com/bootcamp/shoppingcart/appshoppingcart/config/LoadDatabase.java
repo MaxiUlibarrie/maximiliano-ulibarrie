@@ -53,10 +53,10 @@ public class LoadDatabase {
       userRepo.save(user3);
 
       roleRepo.save(new Role("ADMIN"));
-      roleRepo.save(new Role("CUSTOMER"));
+      roleRepo.save(new Role("EMPLOYEE"));
 
       Role roleAdmin = roleRepo.findByName("ADMIN").get();
-      Role roleCustomer = roleRepo.findByName("CUSTOMER").get();
+      Role roleCustomer = roleRepo.findByName("EMPLOYEE").get();
 
       user1.getRoleList().add(roleAdmin);
       user1.getRoleList().add(roleCustomer);
@@ -64,8 +64,6 @@ public class LoadDatabase {
 
       userRepo.save(user1);
       userRepo.save(user2);
-
     };
   }
-
 }

@@ -69,7 +69,7 @@ public class ShoppingCartServiceImpTest {
     when(product1.getIdproduct()).thenReturn(1L);
     product2 = mock(Product.class);
     when(product2.getIdproduct()).thenReturn(2L);
-    cartItem1 = spy(new CartItem(cart,product1,2));
+    cartItem1 = spy(new CartItem(cart, product1,2));
     cartItem2 = spy(new CartItem(cart,product2,3));
     cart.getCartItemList().add(cartItem1);
     cart.getCartItemList().add(cartItem2);

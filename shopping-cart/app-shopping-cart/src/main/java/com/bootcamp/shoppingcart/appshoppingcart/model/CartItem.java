@@ -46,7 +46,7 @@ public class CartItem {
   }
 
   @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="idproduct")
-  @JsonIdentityReference(alwaysAsId=true)
+  @JsonIdentityReference(alwaysAsId = true)
   public Product getProduct() {
     return product;
   }
@@ -56,7 +56,7 @@ public class CartItem {
   }
 
   @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="idcart")
-  @JsonIdentityReference(alwaysAsId=true)
+  @JsonIdentityReference(alwaysAsId = true)
   public Cart getCart() {
     return cart;
   }

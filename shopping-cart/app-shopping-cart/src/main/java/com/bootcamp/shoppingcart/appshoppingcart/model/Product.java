@@ -22,7 +22,7 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long idproduct;
 
-  @Column(length = 50)
+  @Column(length = 50, unique = true)
   private String name;
 
   @Column
@@ -58,7 +58,7 @@ public class Product {
   }
 
   @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="idcategory")
-  @JsonIdentityReference(alwaysAsId=true)
+  @JsonIdentityReference(alwaysAsId = true)
   public Category getCategory() {
     return category;
   }

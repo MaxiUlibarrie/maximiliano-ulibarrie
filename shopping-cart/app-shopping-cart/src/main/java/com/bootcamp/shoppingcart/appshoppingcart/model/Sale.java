@@ -55,7 +55,7 @@ public class Sale {
   }
 
   @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="iduser")
-  @JsonIdentityReference(alwaysAsId=true)
+  @JsonIdentityReference(alwaysAsId = true)
   public User getUser() {
     return user;
   }

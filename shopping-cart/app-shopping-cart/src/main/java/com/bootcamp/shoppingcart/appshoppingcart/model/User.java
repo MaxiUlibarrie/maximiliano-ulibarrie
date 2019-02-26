@@ -1,5 +1,6 @@
 package com.bootcamp.shoppingcart.appshoppingcart.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -68,10 +69,12 @@ public class User {
     return email;
   }
 
+  @JsonIgnore
   public List<Role> getRoleList() {
     return roleList;
   }
 
+  @JsonIgnore
   public List<Cart> getCartList() {
     return cartList;
   }
