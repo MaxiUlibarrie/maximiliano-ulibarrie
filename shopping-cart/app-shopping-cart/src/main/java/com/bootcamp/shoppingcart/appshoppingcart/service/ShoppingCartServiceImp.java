@@ -65,11 +65,11 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
   @Override
   public void addToCart(Long idcart, Long idproduct, Integer quantity) {
     Cart cart = getCartById(idcart);
-    Product product = productService.getProductById(idproduct);
 
     if (cart.existsProduct(idproduct)) {
       cart.getOneCartItem(idproduct).incrementQuantity(quantity);
     } else {
+      Product product = productService.getProductById(idproduct);
       cart.getCartItemList().add(new CartItem(cart,product,quantity));
     }
     cartRepo.save(cart);
