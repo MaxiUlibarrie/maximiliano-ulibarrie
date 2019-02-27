@@ -71,6 +71,10 @@ public class Product {
     this.price = price;
   }
 
+  public void setCategory(Category category) {
+    this.category = category;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

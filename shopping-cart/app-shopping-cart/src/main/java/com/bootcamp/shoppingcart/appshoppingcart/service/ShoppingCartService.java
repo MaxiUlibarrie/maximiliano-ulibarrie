@@ -10,7 +10,7 @@ public interface ShoppingCartService {
   Cart createCart(String username);
   Cart getCartById(Long idcart);
   void deleteCart(Long idcart);
-  List<CartItem> getAllCartItems(Long idcart);
+  List<CartItem> getCartItems(Long idcart);
   void addToCart(Long idcart, Long idproduct, Integer quantity);
   void removeProduct(Long idcart, Long idproduct, Integer quantity);
   void deleteProduct(Long idcart, Long idproduct);

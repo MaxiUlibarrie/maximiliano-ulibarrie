@@ -2,7 +2,9 @@ package com.bootcamp.shoppingcart.appshoppingcart.controller;
 
 import com.bootcamp.shoppingcart.appshoppingcart.model.Cart;
 import com.bootcamp.shoppingcart.appshoppingcart.model.CartItem;
+import com.bootcamp.shoppingcart.appshoppingcart.model.Product;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Sale;
+import com.bootcamp.shoppingcart.appshoppingcart.service.ProductService;
 import com.bootcamp.shoppingcart.appshoppingcart.service.ShoppingCartService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +53,9 @@ public class ShoppingCartController {
   @GetMapping("/{idcart}")
   @PreAuthorize("hasPermission(#idcart,'Cart','read')")
   @ResponseStatus(HttpStatus.OK)
-  public List<CartItem> getAllCartItems(@PathVariable Long idcart) {
+  public List<CartItem> getCartItems(@PathVariable Long idcart) {
     try {
-      return shoppingCartService.getAllCartItems(idcart);
+      return shoppingCartService.getCartItems(idcart);
     } catch (RuntimeException re) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
     }
@@ -97,7 +99,7 @@ public class ShoppingCartController {
     }
   }
 
-  @DeleteMapping("/clear/{idcart}")
+  @DeleteMapping("/{idcart}/clear")
   @PreAuthorize("hasPermission(#idcart,'Cart','delete')")
   @ResponseStatus(HttpStatus.OK)
   public void clearCart(@PathVariable Long idcart) {
@@ -108,7 +110,7 @@ public class ShoppingCartController {
     }
   }
 
-  @PostMapping("/checkout/{idcart}")
+  @PostMapping("/{idcart}/checkout")
   @PreAuthorize("hasPermission(#idcart,'Cart','create')")
   @ResponseStatus(HttpStatus.CREATED)
   public Sale doCheckOut(@PathVariable Long idcart) {
@@ -118,5 +120,4 @@ public class ShoppingCartController {
       throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
     }
   }
-
 }

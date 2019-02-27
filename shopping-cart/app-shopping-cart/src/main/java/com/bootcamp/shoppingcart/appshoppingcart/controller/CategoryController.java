@@ -41,7 +41,11 @@ public class CategoryController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public void createCategory(@RequestBody Category category) {
-    categoryService.createCategory(category);
+    try {
+      categoryService.createCategory(category);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
+    }
   }
 
   @DeleteMapping("/{idcategory}")

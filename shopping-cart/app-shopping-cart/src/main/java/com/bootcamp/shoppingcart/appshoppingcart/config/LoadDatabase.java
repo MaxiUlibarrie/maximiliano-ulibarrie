@@ -56,11 +56,10 @@ public class LoadDatabase {
       roleRepo.save(new Role("EMPLOYEE"));
 
       Role roleAdmin = roleRepo.findByName("ADMIN").get();
-      Role roleCustomer = roleRepo.findByName("EMPLOYEE").get();
+      Role roleEmployee = roleRepo.findByName("EMPLOYEE").get();
 
       user1.getRoleList().add(roleAdmin);
-      user1.getRoleList().add(roleCustomer);
-      user2.getRoleList().add(roleCustomer);
+      user2.getRoleList().add(roleEmployee);
 
       userRepo.save(user1);
       userRepo.save(user2);

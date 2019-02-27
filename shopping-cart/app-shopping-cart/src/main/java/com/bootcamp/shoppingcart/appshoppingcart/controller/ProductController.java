@@ -5,6 +5,7 @@ import com.bootcamp.shoppingcart.appshoppingcart.service.ProductService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,11 +41,11 @@ public class ProductController {
     }
   }
 
-  @GetMapping("/{nameproduct}")
+  @GetMapping("/productname/{productname}")
   @ResponseStatus(HttpStatus.OK)
-  public Product getProductById(@PathVariable String nameproduct) {
+  public Product getProductById(@PathVariable String productname) {
     try {
-      return productService.getProductByName(nameproduct);
+      return productService.getProductByName(productname);
     } catch (RuntimeException re) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
     }
@@ -71,10 +72,15 @@ public class ProductController {
     }
   }
 
-  @PostMapping
+  @PostMapping("/category/{idcategory}")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createProduct(@RequestBody Product product) {
-    productService.createProduct(product);
+  public void createProduct(@RequestBody Product product,
+                            @PathVariable Long idcategory) {
+    try {
+      productService.createProduct(product,idcategory);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
+    }
   }
 
   @PutMapping("/{idproduct}")

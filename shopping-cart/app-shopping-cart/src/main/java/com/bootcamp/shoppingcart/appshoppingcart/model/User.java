@@ -91,8 +91,9 @@ public class User {
     this.email = email;
   }
 
-  public Cart lastCart() {
-    return cartList.get(cartList.size() - 1);
+  public boolean removeRole(Long idrole) {
+    return roleList
+        .removeIf(role -> role.getIdrole().equals(idrole));
   }
 
   @Override

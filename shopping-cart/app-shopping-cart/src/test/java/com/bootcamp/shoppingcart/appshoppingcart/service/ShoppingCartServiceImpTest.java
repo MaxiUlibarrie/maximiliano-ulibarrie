@@ -21,7 +21,6 @@ import com.bootcamp.shoppingcart.appshoppingcart.model.User;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.CartItemRepository;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.CartRepository;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.SaleRepository;
-import java.util.List;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +54,8 @@ public class ShoppingCartServiceImpTest {
 
   private User user;
   private Cart cart;
-  private Product product1, product2;
-  private CartItem cartItem1, cartItem2;
+  private Product mockProduct1, mockProduct2;
+  private CartItem spyCartItem1, spyCartItem2;
 
   @Before
   public void setUp() throws Exception {
@@ -65,14 +64,14 @@ public class ShoppingCartServiceImpTest {
     user.getCartList().add(cart);
     when(cartRepo.findById(anyLong())).thenReturn(Optional.of(cart));
 
-    product1 = mock(Product.class);
-    when(product1.getIdproduct()).thenReturn(1L);
-    product2 = mock(Product.class);
-    when(product2.getIdproduct()).thenReturn(2L);
-    cartItem1 = spy(new CartItem(cart, product1,2));
-    cartItem2 = spy(new CartItem(cart,product2,3));
-    cart.getCartItemList().add(cartItem1);
-    cart.getCartItemList().add(cartItem2);
+    mockProduct1 = mock(Product.class);
+    when(mockProduct1.getIdproduct()).thenReturn(1L);
+    mockProduct2 = mock(Product.class);
+    when(mockProduct2.getIdproduct()).thenReturn(2L);
+    spyCartItem1 = spy(new CartItem(cart, mockProduct1,2));
+    spyCartItem2 = spy(new CartItem(cart, mockProduct2,3));
+    cart.getCartItemList().add(spyCartItem1);
+    cart.getCartItemList().add(spyCartItem2);
   }
 
   @Test
@@ -84,25 +83,10 @@ public class ShoppingCartServiceImpTest {
     verify(cartRepo, times(1)).save(any(Cart.class));
   }
 
-  @Test
-  public void whenGetCartByIdThenReturnTheFoundCart() {
-    Cart foundCart = shoppingCartService.getCartById(anyLong());
-
-    assertEquals(cart,foundCart);
-  }
-
   @Test(expected = NotFoundException.class)
   public void whenGetCartByIdAndItDoesntExistThenThrowNotFoundException() {
     when(cartRepo.findById(anyLong())).thenReturn(Optional.empty());
     shoppingCartService.getCartById(anyLong());
-  }
-
-  @Test
-  public void whenDeleteCartThenCartIsDeletedFromCartRepo() {
-    when(cartRepo.existsById(anyLong())).thenReturn(true);
-    shoppingCartService.deleteCart(1L);
-
-    verify(cartRepo, times(1)).deleteById(1L);
   }
 
   @Test(expected = NotFoundException.class)
@@ -114,15 +98,7 @@ public class ShoppingCartServiceImpTest {
   }
 
   @Test
-  public void whenGetAllCartItemsThenReturnIsListOfCartItems() {
-    List<CartItem> cartItemList = shoppingCartService.getAllCartItems(anyLong());
-
-    assertEquals(cart.getCartItemList(),cartItemList);
-    assertEquals(2,cartItemList.size());
-  }
-
-  @Test
-  public void whenAddToCartAndProductExistsThenIncrementQuantity() {
+  public void whenAddToCartAndProductExistsThenIncrementQuantityAndNotDuplicate() {
     shoppingCartService.addToCart(anyLong(),1L,2);
 
     assertEquals(2,cart.getCartItemList().size());
@@ -158,7 +134,7 @@ public class ShoppingCartServiceImpTest {
 
   @Test
   public void whenDeleteProductThenItIsGoneFromTheCart() {
-    doReturn(5L).when(cartItem2).getIdcartitem();
+    doReturn(5L).when(spyCartItem2).getIdcartitem();
 
     shoppingCartService.deleteProduct(anyLong(),2L);
 
@@ -178,8 +154,8 @@ public class ShoppingCartServiceImpTest {
 
   @Test
   public void whenDoCheckOutThenItReturnsSaleWithCorrectTotalPrice() {
-    when(product1.getPrice()).thenReturn(100.0);
-    when(product2.getPrice()).thenReturn(200.0);
+    when(mockProduct1.getPrice()).thenReturn(100.0);
+    when(mockProduct2.getPrice()).thenReturn(200.0);
 
     Sale sale = shoppingCartService.doCheckOut(anyLong());
     double totalPrice = 2 * 100.0 + 3 * 200.0;

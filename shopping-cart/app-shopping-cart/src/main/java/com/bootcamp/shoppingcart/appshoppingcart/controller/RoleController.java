@@ -41,7 +41,11 @@ public class RoleController {
   @PostMapping
   @ResponseStatus(HttpStatus.OK)
   public void createRole(@RequestBody Role role) {
-    roleService.createRole(role);
+    try {
+      roleService.createRole(role);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
+    }
   }
 
   @DeleteMapping("/{idrole}")

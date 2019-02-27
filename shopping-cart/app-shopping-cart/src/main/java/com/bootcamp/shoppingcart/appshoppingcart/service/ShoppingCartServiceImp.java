@@ -58,7 +58,7 @@ public class ShoppingCartServiceImp implements ShoppingCartService {
   }
 
   @Override
-  public List<CartItem> getAllCartItems(Long idcart) {
+  public List<CartItem> getCartItems(Long idcart) {
     return getCartById(idcart).getCartItemList();
   }
 

@@ -1,10 +1,12 @@
 package com.bootcamp.shoppingcart.appshoppingcart.service;
 
 import com.bootcamp.shoppingcart.appshoppingcart.exception.NotFoundException;
+import com.bootcamp.shoppingcart.appshoppingcart.exception.RepeatedEntityException;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Category;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.CategoryRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +30,9 @@ public class CategoryServiceImp implements CategoryService {
 
   @Override
   public Category createCategory(Category category) {
+    if (categoryRepo.exists(Example.of(category)))
+      throw new RepeatedEntityException(NAME_CATEGORY);
+
     return categoryRepo.save(category);
   }
 

@@ -1,10 +1,12 @@
 package com.bootcamp.shoppingcart.appshoppingcart.service;
 
 import com.bootcamp.shoppingcart.appshoppingcart.exception.NotFoundException;
+import com.bootcamp.shoppingcart.appshoppingcart.exception.RepeatedEntityException;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Role;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.RoleRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +30,8 @@ public class RoleServiceImp implements RoleService {
 
   @Override
   public Role createRole(Role role) {
+    if (roleRepo.exists(Example.of(role))) throw new RepeatedEntityException(NAME_ROLE);
+
     return roleRepo.save(role);
   }
 

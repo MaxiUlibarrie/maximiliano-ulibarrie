@@ -2,6 +2,7 @@ package com.bootcamp.shoppingcart.appshoppingcart.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-@JsonPropertyOrder(value = {"idcart","user","checkedOut","cartItemList"})
+@JsonPropertyOrder(value = {"idcart","user","checkedOut"})
 public class Cart {
 
   @Id
@@ -48,6 +49,7 @@ public class Cart {
     return idcart;
   }
 
+  @JsonIgnore
   public List<CartItem> getCartItemList() {
     return cartItemList;
   }

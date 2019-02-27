@@ -38,7 +38,7 @@ public class UserController {
     }
   }
 
-  @GetMapping("/{username}")
+  @GetMapping("/username/{username}")
   @ResponseStatus(HttpStatus.OK)
   public User getUserById(@PathVariable String username) {
     try {
@@ -54,6 +54,17 @@ public class UserController {
                               @PathVariable Long idrole) {
     try {
       userService.grantRoleToUser(iduser,idrole);
+    } catch (RuntimeException re) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
+    }
+  }
+
+  @DeleteMapping("/{iduser}/role/{idrole}")
+  @ResponseStatus(HttpStatus.OK)
+  public void removeRoleToUser(@PathVariable Long iduser,
+                               @PathVariable Long idrole) {
+    try {
+      userService.removeRoleToUser(iduser,idrole);
     } catch (RuntimeException re) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
     }

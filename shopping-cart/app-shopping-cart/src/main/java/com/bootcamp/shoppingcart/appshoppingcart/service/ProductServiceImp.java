@@ -1,11 +1,13 @@
 package com.bootcamp.shoppingcart.appshoppingcart.service;
 
 import com.bootcamp.shoppingcart.appshoppingcart.exception.NotFoundException;
+import com.bootcamp.shoppingcart.appshoppingcart.exception.RepeatedEntityException;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Category;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Product;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.ProductRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,18 +53,21 @@ public class ProductServiceImp implements ProductService {
   }
 
   @Override
-  public Product createProduct(Product product) {
+  public Product createProduct(Product product, Long idcategory) {
+    Category category = categoryService.getCategoryById(idcategory);
+    product.setCategory(category);
+
+    if (productRepo.exists(Example.of(product)))
+      throw new RepeatedEntityException(NAME_PRODUCT);
+
     return productRepo.save(product);
   }
 
   @Override
   public void updatePriceProduct(Long idproduct, Double price) {
-    productRepo.findById(idproduct)
-        .map(updatedProduct -> {
-          updatedProduct.setPrice(price);
-          return productRepo.save(updatedProduct);
-        })
-        .orElseThrow(() -> new NotFoundException(NAME_PRODUCT,idproduct));
+    Product product = getProductById(idproduct);
+    product.setPrice(price);
+    productRepo.save(product);
   }
 
   @Override

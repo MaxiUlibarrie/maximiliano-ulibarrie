@@ -4,6 +4,7 @@ import com.bootcamp.shoppingcart.appshoppingcart.service.CustomUserDetailService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,12 +33,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .antMatchers("/v2/api-docs").permitAll()
         .antMatchers("/swagger-ui.html").permitAll()
-        .antMatchers("/api/signup").permitAll()
+        .antMatchers("/api/signup").anonymous()
         .antMatchers("/api/shoppingcart/**").authenticated()
         .antMatchers("/api/user/**").hasRole("ADMIN")
         .antMatchers("/api/role/**").hasRole("ADMIN")
-        .antMatchers("/api/product/**").hasRole("EMPLOYEE")
-        .antMatchers("/api/category/**").hasRole("EMPLOYEE")
+        .antMatchers(HttpMethod.GET,"/api/product/**").authenticated()
+        .antMatchers(HttpMethod.POST,"/api/product/**").hasAnyRole("EMPLOYEE","ADMIN")
+        .antMatchers(HttpMethod.PUT,"/api/product/**").hasAnyRole("EMPLOYEE","ADMIN")
+        .antMatchers("/api/category/**").hasAnyRole("EMPLOYEE","ADMIN")
         .and()
         .httpBasic();
   }

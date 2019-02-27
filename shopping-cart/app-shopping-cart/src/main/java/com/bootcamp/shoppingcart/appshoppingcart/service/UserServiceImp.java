@@ -19,6 +19,7 @@ public class UserServiceImp implements UserService {
 
   private final String NAME_USER = "User";
   private final String MESSAGE_NOT_FOUND_USERNAME = "Could not find username.";
+  private final String MESSAGE_NOT_HAVE_ROLE = "This user doesn't have the role.";
 
   @Override
   public List<User> getAllUsers() {
@@ -47,6 +48,15 @@ public class UserServiceImp implements UserService {
     User user = getUserById(iduser);
     Role role = roleService.getRoleById(idrole);
     user.getRoleList().add(role);
+    userRepo.save(user);
+  }
+
+  @Override
+  public void removeRoleToUser(Long iduser, Long idrole) {
+    User user = getUserById(iduser);
+    boolean success = user.removeRole(idrole);
+    if (!success) throw new RuntimeException(MESSAGE_NOT_HAVE_ROLE);
+
     userRepo.save(user);
   }
 
