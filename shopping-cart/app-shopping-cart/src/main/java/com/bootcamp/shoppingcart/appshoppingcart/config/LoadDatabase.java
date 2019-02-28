@@ -44,13 +44,11 @@ public class LoadDatabase {
       productRepo.save(new Product("tablet g",67,category1,"Samsung"));
       productRepo.save(new Product("printer g",800,category2,"HP"));
 
-      User user1 = new User("sam","sam","sam@gmail.com");
-      User user2 = new User("agos","agos","agos@gmail.com");
-      User user3 = new User("denise","denise","denise@gmail.com");
+      User user1 = new User("joaquin","joaquin","joaquin@gmail.com");
+      User user2 = new User("agostina","agostina","agostina@gmail.com");
 
       userRepo.save(user1);
       userRepo.save(user2);
-      userRepo.save(user3);
 
       roleRepo.save(new Role("ADMIN"));
       roleRepo.save(new Role("EMPLOYEE"));

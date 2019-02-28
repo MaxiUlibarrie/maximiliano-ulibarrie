@@ -1,11 +1,13 @@
 package com.bootcamp.shoppingcart.appshoppingcart.service;
 
 import com.bootcamp.shoppingcart.appshoppingcart.exception.NotFoundException;
+import com.bootcamp.shoppingcart.appshoppingcart.exception.RepeatedEntityException;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Role;
 import com.bootcamp.shoppingcart.appshoppingcart.model.User;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.UserRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +30,9 @@ public class UserServiceImp implements UserService {
 
   @Override
   public User createUser(User user) {
+    if (userRepo.existsByUsername(user.getUsername()) || userRepo.existsByEmail(user.getEmail()))
+      throw new RepeatedEntityException(NAME_USER);
+
     return userRepo.save(user);
   }
 

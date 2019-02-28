@@ -27,6 +27,7 @@ public class LineSale {
   private Sale sale;
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "idproduct")
   private Product product;
 
   @Column

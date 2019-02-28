@@ -1,10 +1,8 @@
 package com.bootcamp.shoppingcart.appshoppingcart.controller;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -19,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bootcamp.shoppingcart.appshoppingcart.model.Cart;
 import com.bootcamp.shoppingcart.appshoppingcart.model.CartItem;
-import com.bootcamp.shoppingcart.appshoppingcart.model.Category;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Product;
 import com.bootcamp.shoppingcart.appshoppingcart.model.User;
 import com.bootcamp.shoppingcart.appshoppingcart.service.ShoppingCartService;
@@ -34,8 +31,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -64,7 +59,6 @@ public class ShoppingCartControllerTest {
         .build();
 
     user = mock(User.class);
-//    when(user.getIduser()).thenReturn(1L);
     cart = spy(new Cart(user));
     doReturn(1L).when(cart).getIdcart();
     product = mock(Product.class);
@@ -85,8 +79,7 @@ public class ShoppingCartControllerTest {
 
     mockMvc.perform(get("/api/shoppingcart/1"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$", hasSize(1)))
-        .andExpect(jsonPath("$[0].quantity", is(cartItem.getQuantity())));
+        .andExpect(jsonPath("$", hasSize(1)));
   }
 
   @Test
