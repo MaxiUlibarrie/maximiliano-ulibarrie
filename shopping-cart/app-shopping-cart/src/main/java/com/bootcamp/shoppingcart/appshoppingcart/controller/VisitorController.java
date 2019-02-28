@@ -20,9 +20,9 @@ public class VisitorController {
 
   @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)
-  public void signUp(@RequestBody User user) {
+  public User signUp(@RequestBody User user) {
     try {
-      userService.createUser(user);
+      return userService.createUser(user);
     } catch (RuntimeException re) {
       throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
     }

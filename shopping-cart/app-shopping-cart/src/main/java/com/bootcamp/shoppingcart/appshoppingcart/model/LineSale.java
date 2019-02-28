@@ -15,12 +15,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-@JsonPropertyOrder(value = {"idLineSale","sale","product","quantity","subTotalPrice"})
+@JsonPropertyOrder(value = {"idlinesale","sale","product","quantity","subTotalPrice"})
 public class LineSale {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long idLineSale;
+  private Long idlinesale;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "idsale")
@@ -45,8 +45,8 @@ public class LineSale {
 
   protected LineSale() {}
 
-  public Long getIdLineSale() {
-    return idLineSale;
+  public Long getIdlinesale() {
+    return idlinesale;
   }
 
   @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="idsale")
@@ -79,7 +79,7 @@ public class LineSale {
     }
     LineSale lineSale = (LineSale) o;
     return Double.compare(lineSale.subTotalPrice, subTotalPrice) == 0 &&
-        Objects.equals(idLineSale, lineSale.idLineSale) &&
+        Objects.equals(idlinesale, lineSale.idlinesale) &&
         Objects.equals(sale, lineSale.sale) &&
         Objects.equals(product, lineSale.product) &&
         Objects.equals(quantity, lineSale.quantity);
@@ -87,6 +87,6 @@ public class LineSale {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idLineSale, sale, product, quantity, subTotalPrice);
+    return Objects.hash(idlinesale, sale, product, quantity, subTotalPrice);
   }
 }
