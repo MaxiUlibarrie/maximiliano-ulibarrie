@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class CartCheckedOutException extends RuntimeException {
+public class UserHasntThisRoleException extends RuntimeException {
 
-  public CartCheckedOutException(Long idcart) {
-    super(String.format("Cart %d is already checked out.",idcart));
+  public UserHasntThisRoleException() {
+    super("This user hasn't this role.");
   }
 }

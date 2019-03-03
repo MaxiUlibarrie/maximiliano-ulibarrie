@@ -35,7 +35,7 @@ public class ProductServiceImp implements ProductService {
   @Override
   public Product getProductByName(String name) {
     return productRepo.findByName(name)
-        .orElseThrow(() -> new NotFoundException(name));
+        .orElseThrow(() -> new NotFoundException(NAME_PRODUCT,name));
   }
 
   @Override

@@ -5,7 +5,6 @@ import com.bootcamp.shoppingcart.appshoppingcart.service.ProductService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/product")
@@ -34,73 +32,45 @@ public class ProductController {
   @GetMapping("/{idproduct}")
   @ResponseStatus(HttpStatus.OK)
   public Product getProductById(@PathVariable Long idproduct) {
-    try {
-      return productService.getProductById(idproduct);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+    return productService.getProductById(idproduct);
   }
 
-  @GetMapping("/productname/{productname}")
+  @GetMapping("/name/{name}")
   @ResponseStatus(HttpStatus.OK)
-  public Product getProductById(@PathVariable String productname) {
-    try {
-      return productService.getProductByName(productname);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+  public Product getProductByName(@PathVariable String name) {
+    return productService.getProductByName(name);
   }
 
   @GetMapping("/category/{idcategory}")
   @ResponseStatus(HttpStatus.OK)
   public List<Product> getProductsByCategory(@PathVariable Long idcategory) {
-    try {
-      return productService.getProductsByCategory(idcategory);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+    return productService.getProductsByCategory(idcategory);
   }
 
   @GetMapping("/category/{idcategory}/manufacturer/{manufacturer}")
   @ResponseStatus(HttpStatus.OK)
   public List<Product> getProductsByCategoryAndManufacturer(@PathVariable Long idcategory,
                                                             @PathVariable String manufacturer) {
-    try {
-      return productService.getProductsByCategoryAndManufacturer(idcategory,manufacturer);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+    return productService.getProductsByCategoryAndManufacturer(idcategory,manufacturer);
   }
 
   @PostMapping("/category/{idcategory}")
   @ResponseStatus(HttpStatus.CREATED)
   public void createProduct(@RequestBody Product product,
                             @PathVariable Long idcategory) {
-    try {
-      productService.createProduct(product,idcategory);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
-    }
+    productService.createProduct(product,idcategory);
   }
 
   @PutMapping("/{idproduct}")
   @ResponseStatus(HttpStatus.OK)
   public void updateProductPrice(@PathVariable Long idproduct,
                                  @RequestParam Double price) {
-    try {
-      productService.updatePriceProduct(idproduct,price);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+    productService.updatePriceProduct(idproduct,price);
   }
 
   @DeleteMapping("/{idproduct}")
   @ResponseStatus(HttpStatus.OK)
   public void deleteProduct(@PathVariable Long idproduct) {
-    try {
-      productService.deleteProduct(idproduct);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+    productService.deleteProduct(idproduct);
   }
 }

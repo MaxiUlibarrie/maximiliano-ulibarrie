@@ -1,5 +1,6 @@
 package com.bootcamp.shoppingcart.appshoppingcart.model;
 
+import com.bootcamp.shoppingcart.appshoppingcart.exception.UserHasntThisRoleException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +33,7 @@ public class User {
   @Column(length = 30, unique = true)
   private String email;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "user_role",
     joinColumns = @JoinColumn(name = "iduser"),
     inverseJoinColumns = @JoinColumn(name = "idrole"),
@@ -92,8 +92,15 @@ public class User {
   }
 
   public boolean removeRole(Long idrole) {
+    if (!hasRole(idrole)) throw new UserHasntThisRoleException();
+
     return roleList
         .removeIf(role -> role.getIdrole().equals(idrole));
+  }
+
+  public boolean hasRole(Long idrole) {
+    return roleList.stream()
+        .anyMatch(role -> role.getIdrole().equals(idrole));
   }
 
   @Override

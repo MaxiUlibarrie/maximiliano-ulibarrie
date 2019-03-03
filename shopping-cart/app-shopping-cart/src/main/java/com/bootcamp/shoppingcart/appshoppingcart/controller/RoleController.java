@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/role")
@@ -31,30 +30,18 @@ public class RoleController {
   @GetMapping("/{idrole}")
   @ResponseStatus(HttpStatus.OK)
   public Role getRoleById(@PathVariable Long idrole) {
-    try {
-      return roleService.getRoleById(idrole);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+    return roleService.getRoleById(idrole);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.OK)
   public void createRole(@RequestBody Role role) {
-    try {
-      roleService.createRole(role);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
-    }
+    roleService.createRole(role);
   }
 
   @DeleteMapping("/{idrole}")
   @ResponseStatus(HttpStatus.OK)
   public void deleteRole(@PathVariable Long idrole) {
-    try {
-      roleService.deleteRole(idrole);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+    roleService.deleteRole(idrole);
   }
 }

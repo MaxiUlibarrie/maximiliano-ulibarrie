@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/category")
@@ -31,30 +30,18 @@ public class CategoryController {
   @GetMapping("/{idcategory}")
   @ResponseStatus(HttpStatus.OK)
   public Category getCategoryById(@PathVariable Long idcategory) {
-    try {
-      return categoryService.getCategoryById(idcategory);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+    return categoryService.getCategoryById(idcategory);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public void createCategory(@RequestBody Category category) {
-    try {
-      categoryService.createCategory(category);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
-    }
+    categoryService.createCategory(category);
   }
 
   @DeleteMapping("/{idcategory}")
   @ResponseStatus(HttpStatus.OK)
   public void deleteCategory(@PathVariable Long idcategory) {
-    try {
-      categoryService.deleteCategory(idcategory);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,re.getMessage());
-    }
+    categoryService.deleteCategory(idcategory);
   }
 }

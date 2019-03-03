@@ -1,11 +1,11 @@
 package com.bootcamp.shoppingcart.appshoppingcart.config;
 
 import com.bootcamp.shoppingcart.appshoppingcart.model.Category;
+import com.bootcamp.shoppingcart.appshoppingcart.model.Product;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Role;
 import com.bootcamp.shoppingcart.appshoppingcart.model.User;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.CategoryRepository;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.ProductRepository;
-import com.bootcamp.shoppingcart.appshoppingcart.model.Product;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.RoleRepository;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

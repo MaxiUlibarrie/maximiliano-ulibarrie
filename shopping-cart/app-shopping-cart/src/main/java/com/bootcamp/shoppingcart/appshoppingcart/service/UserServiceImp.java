@@ -7,7 +7,6 @@ import com.bootcamp.shoppingcart.appshoppingcart.model.User;
 import com.bootcamp.shoppingcart.appshoppingcart.repository.UserRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +20,6 @@ public class UserServiceImp implements UserService {
 
   private final String NAME_USER = "User";
   private final String MESSAGE_NOT_FOUND_USERNAME = "Could not find username.";
-  private final String MESSAGE_NOT_HAVE_ROLE = "This user doesn't have the role.";
 
   @Override
   public List<User> getAllUsers() {
@@ -59,8 +57,7 @@ public class UserServiceImp implements UserService {
   @Override
   public void removeRoleToUser(Long iduser, Long idrole) {
     User user = getUserById(iduser);
-    boolean success = user.removeRole(idrole);
-    if (!success) throw new RuntimeException(MESSAGE_NOT_HAVE_ROLE);
+    user.removeRole(idrole);
 
     userRepo.save(user);
   }

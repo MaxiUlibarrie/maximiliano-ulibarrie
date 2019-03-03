@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.bootcamp.shoppingcart.appshoppingcart.exception.NotFoundException;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Cart;
 import com.bootcamp.shoppingcart.appshoppingcart.model.CartItem;
 import com.bootcamp.shoppingcart.appshoppingcart.model.Product;
@@ -30,7 +31,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -96,13 +96,11 @@ public class ShoppingCartControllerTest {
 
   @Test
   public void whenAddToCartAndNotFoundCartThenReturnsHttpStatusNotFound() throws Exception {
-    String messageNotFound = "Could not find entity";
-    doThrow(new RuntimeException(messageNotFound))
+    doThrow(new NotFoundException("message"))
         .when(shoppingCartService)
         .addToCart(anyLong(),anyLong(),anyInt());
 
-    mockMvc.perform(post("/api/shoppingcart/1/product/1?quantity=3")
-        .contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(post("/api/shoppingcart/1/product/1?quantity=3"))
         .andExpect(status().isNotFound());
   }
 

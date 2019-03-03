@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api")
@@ -21,10 +20,6 @@ public class VisitorController {
   @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)
   public User signUp(@RequestBody User user) {
-    try {
-      return userService.createUser(user);
-    } catch (RuntimeException re) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT,re.getMessage());
-    }
+    return userService.createUser(user);
   }
 }
