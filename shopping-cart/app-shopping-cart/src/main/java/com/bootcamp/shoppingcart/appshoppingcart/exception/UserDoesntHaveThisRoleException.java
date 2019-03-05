@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class UserHasntThisRoleException extends RuntimeException {
+public class UserDoesntHaveThisRoleException extends RuntimeException {
 
-  public UserHasntThisRoleException() {
-    super("This user hasn't this role.");
+  public UserDoesntHaveThisRoleException() {
+    super("This user doesn't have this role.");
   }
 }
